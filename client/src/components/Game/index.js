@@ -35,7 +35,7 @@ import { getSize, revertSize } from "../../utils";
 import {loading} from '../../utils/loading';
 import { letterSpacing } from "@mui/system";
 
-const SIDE_NAV_WIDTH = 500;
+const SIDE_NAV_WIDTH = 400;
 
 export const getBounds = (spaces) => {
     let left = Infinity;
