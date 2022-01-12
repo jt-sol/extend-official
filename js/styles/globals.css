@@ -1,0 +1,158 @@
+@font-face {
+    font-family: "Space Grotesk";
+    src: url("/fonts/SpaceGrotesk-VariableFont_wght.ttf") format("opentype");
+}
+
+@font-face {
+    font-family: "Stabil Grotesk";
+    src: url("/fonts/StabilGrotesk-Regular.otf") format("opentype");
+}
+
+@font-face {
+    font-family: "Attila Sans Sharp";
+    src: url("/fonts/AttilaSansSharp-Black.woff") format("opentype");
+}
+
+
+@font-face {
+    font-family: "Satoshi";
+    src: url("/fonts/Satoshi-Regular.otf") format("opentype");
+}
+* {
+    box-sizing: border-box;
+}
+
+
+
+html,
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+    background-color: black !important;
+    color: #E6F5F5 !important;
+    font-family: "Stabil Grotesk", Helvetica, Arial, serif !important;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+
+
+
+.main-title {
+    font-style: normal;
+    font-weight: 800;
+    font-size: 72px;
+    line-height: 72px;
+    letter-spacing: -0.01em;
+}
+
+h1 {
+    color: #E6F5F5 !important;
+    font-style: normal;
+    font-weight: 800;
+    font-size: 42px;
+    line-height: 58px;
+    /* identical to box height */
+    margin-bottom: 24px !important;
+    letter-spacing: -0.01em;
+}
+
+h2 {
+    font-size: 28px;
+    color: #E6F5F5 !important;
+
+}
+
+h1, h2 {
+    font-family: "Attila Sans Sharp" !important;
+}
+
+p {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 24px;
+    line-height: 32px;
+    /* or 133% */
+
+    letter-spacing: -0.01em;
+    color: #E6F5F5 !important;
+    text-align: unset !important;
+}
+
+button {
+    font-style: normal;
+    font-weight: 600 !important;
+    line-height: 24px !important;
+    height: 48px !important;
+    font-size: 1.125rem !important;
+    padding: 0px 32px !important;
+    /* identical to box height, or 100% */
+
+    text-align: center;
+    letter-spacing: -0.01em;
+    background-color: #E6F5F5 !important;
+    border-radius: 15px !important;
+}
+
+.big-button{
+    height: 64px !important;
+    font-size: 24px !important;
+    padding: 0px 40px !important;
+    border-radius: 25px !important;
+}
+
+section{
+    margin-bottom: 60px !important;
+    margin-top: 60px !important;
+}
+@media (max-width: 768px) {
+    .main-title {
+        font-style: normal;
+        font-weight: 800;
+        font-size: 48px;
+        line-height: 54px;
+    }
+
+    body {
+        width: unset !important;
+    }
+
+    p {
+        font-style: normal;
+        font-weight: normal;
+        font-size: 18px;
+        line-height: 24px;
+        /* or 100% */
+
+        letter-spacing: -0.01em;
+        text-align: justify;
+    }
+
+    h1 {
+        font-weight: 800;
+        font-size: 1.8rem;
+        line-height: 43px;
+        letter-spacing: -0.01em;
+    }
+
+    img {
+        width: 100% !important;
+    }
+    button {
+        height: 48px !important;
+        font-size: 1.125rem !important;
+        padding: 0px 32px !important;
+        border-radius: 15px !important;
+    }
+    section{
+        margin-bottom: 5px !important;
+        margin-top: 5px !important;
+    }
+}
