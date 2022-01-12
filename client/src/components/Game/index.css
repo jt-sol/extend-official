@@ -71,6 +71,12 @@
     color: gray;
 }
 
+.sidebarDivider {
+    font-family: "Attila Sans Sharp" !important;
+    font-size: small;
+    color: whitesmoke;
+}
+
 .examine .name h1:hover {
     color: white;
 }

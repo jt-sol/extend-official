@@ -112,6 +112,7 @@ export class Game extends React.Component {
             anims: false,
             floor: false,
             img_upl: null,
+            has_img: false,
             frame: 0,
             maxFrame: 1,
             menuOpen: false, 
@@ -1198,7 +1199,7 @@ export class Game extends React.Component {
         let f = files[0];
         document.getElementById("img-file-name").textContent = f.name;
 
-        this.setState({ img_upl: f });
+        this.setState({ img_upl: f, has_img: true });
     }
 
     handleChangeFocusPrice = (e) => {
@@ -1674,6 +1675,7 @@ export class Game extends React.Component {
                 changeColors={this.changeColors}
                 handleChangeImg={this.handleChangeImg}
                 uploadImage={this.uploadImage}
+                hasImage={this.state.has_img}
                 handleChangeSelectingPrice={this.handleChangeSelectingPrice}
                 changePrices={this.changePrices}
                 delistSpaces={this.delistSpaces}

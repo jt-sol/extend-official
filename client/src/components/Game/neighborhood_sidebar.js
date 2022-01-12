@@ -11,7 +11,7 @@ export class NeighborhoodSidebar extends React.Component {
     let coordName = `Neighborhood (${this.props.n_x}, ${this.props.n_y})`;
     return (
     <div className="neighborhoodDashboard">
-    <h1> {this.props.name} </h1>
+    <h1 style={{marginTop: "20px"}}> {this.props.name} </h1>
     <h5> {coordName} </h5>
       <List id="focusSidebarPrefix">
         <ListItem className="info" style={{ display: "block" }}>
