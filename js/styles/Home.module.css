@@ -1,0 +1,362 @@
+.container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    max-width: 1440px;
+}
+
+.headerText {
+    font-size: 24px;
+}
+
+.titleImageContainer, .extendsImageContainer, .spaceImageContainer {
+    min-height: 35rem;
+    background-size: cover;
+
+}
+
+.borderRadiusButton{
+    border-radius: 2px !important;
+}
+
+.canvasButtonContainer {
+    text-align: right;
+}
+
+.canvasButton{
+     height: 32px !important;
+}
+
+.browseTheMapButton {
+    margin-bottom: 20px;
+}
+
+.titleImageContainer {
+    background-image: url("/images/top_header.png");
+}
+
+.extendsImageContainer {
+    background-image: url("/images/extends.png");
+}
+
+.spaceImageContainer {
+    background-image: url("/images/spaces.png");
+}
+
+.titleImage {
+    width: 41.69rem;
+    position: absolute;
+}
+
+.headerSectionContent {
+    justify-content: space-between;
+    display: flex;
+    flex-direction: column;
+}
+
+.sectionHeader {
+    margin-top: 0 !important;
+    padding-left: 80px;
+}
+
+.sectionContent {
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.extendSection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.roadMap {
+    margin-bottom: 10%;
+
+}
+
+.sectionMain {
+    padding-right: 80px;
+    padding-left: 80px;
+    margin-bottom: 200px;
+}
+
+.sectionNotMargin {
+    margin-bottom: 0;
+}
+
+.logo {
+    margin-top: 15px;
+}
+
+.roadMapBackground {
+    flex-direction: row-reverse;
+    min-height: 750px;
+    position: relative;
+}
+
+.roadMapBackground > img {
+    width: 100%;
+    left: 0;
+}
+
+.spaceImage {
+    width: 29.62rem;
+    position: absolute;
+    margin-left: -120px;
+}
+
+.spaceContent {
+    min-height: 450px;
+    justify-content: center;
+}
+
+.extendsImage {
+    width: 34.5rem;
+}
+
+.cuceImage {
+    width: 100%;
+}
+
+.logoImage {
+    height: 36px;
+}
+
+.accordionItem > h2 > button{
+    background-color: #1A1A1C !important;
+    color: white;
+    font-size: 18px !important;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 23px;
+    letter-spacing: -0.01em;
+}
+
+.accordionItem > h2 > button::after {
+   background-image: url("/images/arrow-accordion.svg");
+}
+
+.accordionItem > h2 > button:not(.collapsed)::after{
+   background-image: url("/images/arrow-accordion.svg");
+}
+
+.accordionItem > h2 > button:not(.collapsed){
+    color: white;
+}
+
+.accordionItem > h2 > button:focus{
+   border-color: unset !important;
+   box-shadow: unset;
+   -webkit-box-shadow: unset;
+}
+
+.accordionItem {
+    background-color: #1A1A1C !important;
+    color: white;
+    font-size: 18px !important;
+}
+
+@media (max-width: 1200px) {
+    .sectionMain {
+        padding-right: 20px;
+        padding-left: 20px;
+    }
+
+    .spaceImageContainer {
+        background-position: center;
+    }
+
+    .roadMapBackground {
+        min-height: 400px;
+    }
+}
+
+@media (max-width: 768px) {
+    .sectionReverse {
+        flex-direction: column-reverse;
+    }
+
+    .spaceImage {
+        margin-left: 0;
+        transform: scaleY(-1);
+        width: 100%;
+        margin-top: -100px;
+        position: relative;
+    }
+
+    .roadMapBackground {
+        min-height: 20rem;
+    }
+
+    .roadMapBackground > img {
+        top: 10px;
+    }
+
+    .logo {
+        height: 36px;
+        width: auto !important;
+    }
+
+    .logoContainer {
+        display: flex;
+        min-height: 120px;
+    }
+
+    .roadMap {
+        margin-bottom: 120px;
+    }
+
+    .sectionMain {
+        padding-left: 0;
+        padding-right: 0;
+        margin-bottom: 0;
+    }
+
+    .sectionContent, .extendSection, .headerSectionContent, .roadMapContent {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .sectionHeader {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .spaceContent {
+        min-height: 0;
+        justify-content: initial;
+    }
+
+    .titleImageContainer, .extendsImageContainer, .spaceImageContainer {
+        background-position: center;
+    }
+
+    .titleImageContainer {
+        background-position: 90% 0px;
+    }
+
+    .spaceImageContainer {
+        min-height: 45rem;
+        transform: scaleY(-1);
+    }
+}
+
+@media (max-width: 550px) {
+    .sectionReverse {
+        flex-direction: column-reverse;
+    }
+
+    .extendSection {
+        text-align: left;
+        display: block;
+    }
+
+    .logoImage{
+        height: 25px !important;
+    }
+
+    .canvasButton{
+         font-size: 14px !important;
+    }
+
+    .spaceImage {
+        margin-left: 0;
+        transform: scaleY(-1);
+        width: 100%;
+        margin-top: -100px;
+        position: relative;
+    }
+
+    .roadMapBackground {
+        min-height: 10rem;
+    }
+
+    .roadMapBackground > img {
+        top: 10px;
+    }
+
+    .logo {
+        height: 36px;
+        width: auto !important;
+    }
+
+    .logoContainer {
+        display: flex;
+        min-height: 120px;
+    }
+
+    .roadMap {
+        margin-bottom: 120px;
+    }
+
+    .sectionMain {
+        padding-left: 0;
+        padding-right: 0;
+        margin-bottom: 0;
+    }
+
+    .accordionItem > h2 > button{
+        height: auto !important;
+        padding-top: 3px !important;
+        min-height: 40px !important;
+    }
+
+    .sectionContent, .extendSection, .headerSectionContent, .roadMapContent {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .sectionHeader {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .spaceContent {
+        min-height: 0;
+        justify-content: initial;
+    }
+
+    .titleImageContainer, .extendsImageContainer, .spaceImageContainer {
+        background-position: center;
+    }
+
+    .titleImageContainer {
+        background-position: 90% 0px;
+    }
+
+    .spaceImageContainer {
+        min-height: 37rem;
+        transform: scaleY(-1);
+        background-size: 130%;
+        background-position-x: left;
+    }
+}
+
+
+
+@media (min-width: 1200px) {
+    .titleImageContainer, .extendsImageContainer, .spaceImageContainer {
+        min-height: 50rem;
+        background-position-x: center;
+    }
+}
+
+
+@media (min-width: 465px) and (max-width: 577px) {
+    .roadMapBackground {
+        min-height: 13rem;
+    }
+
+    .spaceImageContainer {
+        min-height: 42rem;
+    }
+}
+
+@media (min-width: 800px) and (max-width: 1200px) {
+    .mainTitle{
+        margin-top: 8rem;
+    }
+}
+

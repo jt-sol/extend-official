@@ -1,0 +1,56 @@
+@font-face {
+    font-family: Attila;
+    src: url("/assets/font/AttilaSansSharpTrial-Bold.otf") format("opentype");
+}
+
+
+#background,
+#foreground,
+#html,
+#site,
+body {
+-webkit-user-drag: none;
+-moz-user-select: none;
+-webkit-user-select: none;
+-ms-user-select: none;
+user-select: none;
+}
+#base,
+#background {
+position: relative;
+top: 0;
+left: 0;
+width: 100vw;
+height: 100vw;
+border-radius: 8%;
+}
+#foreground {
+position: absolute;
+width: 100vw;
+height: 100vw;
+border-radius: 8%;
+}
+@media (min-aspect-ratio: 1/1) {
+#base,
+#face {
+    height: 100%;
+    width: auto;
+}
+#background,
+#foreground {
+    height: 100vh;
+    width: 100vh;
+}
+}
+body {
+overflow: hidden;
+height: 100vh;
+width: 100vw;
+margin: 0;
+position: fixed;
+}
+.center {
+display: flex;
+justify-content: center;
+align-items: center;
+}

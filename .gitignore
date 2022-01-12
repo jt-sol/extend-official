@@ -1,0 +1,8 @@
+**/.ipynb_checkpoints/*
+!color/target/deploy/onee6nft-keypair.json
+.DS_Store
+node_modules
+.vscode
+**/config.ts
+.idea
+./cli/src/.cache

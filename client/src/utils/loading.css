@@ -1,0 +1,13 @@
+.red-text.ant-progress {
+    margin: 10px;
+}
+
+.red-text.ant-progress .ant-progress-text {
+    color: red;
+}
+
+.description {
+    font-size: 12px;
+    color: grey;
+    margin-bottom: 10px;
+}

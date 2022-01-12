@@ -1,0 +1,18 @@
+use crate::state::NEIGHBORHOOD_SIZE;
+
+pub fn floor_divide(x: i64, y: usize) -> i64 {
+    if x >= 0{
+        return x / y as i64;
+    }
+    else {
+        let mut ans = x / y as i64;
+        if x % y as i64 != 0{
+            ans -= 1;
+        }
+        return ans;
+    }
+}
+
+pub fn get_neighborhood_xy(x: i64, y: i64) -> (i64, i64){
+    return (floor_divide(x, NEIGHBORHOOD_SIZE), floor_divide(y, NEIGHBORHOOD_SIZE));
+}
