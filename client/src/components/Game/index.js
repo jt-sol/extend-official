@@ -1689,11 +1689,15 @@ export class Game extends React.Component {
             />
         }
         else if (this.state.neighborhood.focused) {
+            const n_x = this.state.neighborhood.n_x;
+            const n_y = this.state.neighborhood.n_y;
             info = <NeighborhoodSidebar
             trades = {this.state.neighborhood.trades}
             name = { this.viewport.neighborhood_names[JSON.stringify({ n_x:  this.state.neighborhood.n_x, n_y : this.state.neighborhood.n_y })]} 
-            n_x = {this.state.neighborhood.n_x}
-            n_y = {this.state.neighborhood.n_y}
+            n_x = {n_x}
+            n_y = {n_y}
+            canvas = {this.board.current.canvasCache[JSON.stringify({ n_x, n_y })]}
+            canvasSize = {Math.min(SIDE_NAV_WIDTH, window.innerWidth - 48)}
             addNewFrame={this.addNewFrame}
             />;
         }
