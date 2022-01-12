@@ -590,18 +590,18 @@ export class Board extends React.Component {
             currentRef.style.width = scale - 0.2 * scale + "px";
             currentRef.style.height = scale - 0.2 * scale + "px";
 
-            // const n_x = Math.floor(this.props.clicked_x / NEIGHBORHOOD_SIZE);
-            // const n_y = Math.floor(this.props.clicked_y / NEIGHBORHOOD_SIZE);
-            // const key = JSON.stringify({ n_x, n_y });
+            const n_x = Math.floor(this.props.clicked_x / NEIGHBORHOOD_SIZE);
+            const n_y = Math.floor(this.props.clicked_y / NEIGHBORHOOD_SIZE);
+            const key = JSON.stringify({ n_x, n_y });
 
-            // if (this.map && key in this.map) {
-            //     const p_x = this.props.clicked_x - n_x * NEIGHBORHOOD_SIZE;
-            //     const p_y = this.props.clicked_y - n_y * NEIGHBORHOOD_SIZE;
-            //     const color = this.map[key][p_y][p_x];
-            //     const newColor = colorHighlight(color);
-            //     const colorstr = `px dashed ${newColor}`;
-            //     currentRef.style.border = 0.1 * scale + colorstr;
-            // }
+            if (this.map && key in this.map) {
+                const p_x = this.props.clicked_x - n_x * NEIGHBORHOOD_SIZE;
+                const p_y = this.props.clicked_y - n_y * NEIGHBORHOOD_SIZE;
+                const color = this.map[key][p_y][p_x];
+                const newColor = colorHighlight(color);
+                const colorstr = `px dashed ${newColor}`;
+                currentRef.style.border = 0.1 * scale + colorstr;
+            }
         }
     }
 
