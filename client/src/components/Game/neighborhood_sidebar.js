@@ -12,7 +12,7 @@ export class NeighborhoodSidebar extends React.Component {
     return (
     <div className="neighborhoodDashboard">
     <h1> {this.props.name} </h1>
-    <h1> {coordName} </h1> {/* change to a smaller tag...*/}
+    <h5> {coordName} </h5>
       <List id="focusSidebarPrefix">
         <ListItem className="info" style={{ display: "block" }}>
           <Box style={{ fontSize: "12px", color: "gray" }}>FLOOR</Box>
