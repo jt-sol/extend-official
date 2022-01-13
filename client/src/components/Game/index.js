@@ -416,7 +416,8 @@ export class Game extends React.Component {
     }
 
     closeSideNav = () => {
-        this.setState({ showNav: false });
+        document.getElementById("img-file-name").textContent = null;
+        this.setState({ showNav: false, has_img: false, img_upl: null });
     }
 
     changeColor = () => {
