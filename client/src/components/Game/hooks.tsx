@@ -415,6 +415,7 @@ export function Screen(props) {
             let price = purchaseSpaceTrigger["price"];
             if (price) {
                 if (wallet.publicKey) {
+                    let currentUser = wallet.publicKey;
                     const x = purchaseSpaceTrigger["x"];
                     const y = purchaseSpaceTrigger["y"];
                     const bob = purchaseSpaceTrigger["owner"];
@@ -425,17 +426,21 @@ export function Screen(props) {
                         let ix = await acceptOfferInstruction(server, connection, wallet, BASE, change);
                         const response = await sendTransaction(connection, wallet, ix, "Buy space");
                         if (response) {
-                            let newOwnedSpaces = new Set(ownedSpaces);
-                            let newOwnedMints = {...ownedMints};
-                            newOwnedSpaces.add(position);
+                            let finalOwnedSpaces = new Set(ownedSpaces);
+                            let newOwnedMints = {};
+                            finalOwnedSpaces.add(position);
                             newOwnedMints[position] = spaceMint;
-                            setOwnedSpaces(newOwnedSpaces);
-                            setOwnedMints(newOwnedMints);
-                        }
-                        // refresh focus if not changed
-                        const focus = game.current?.state.focus;
-                        if (focus && focus.focus && focus.x == x && focus.y == y){
-                            game.current?.handleFocusRefresh();
+                            // refresh focus if not changed
+                            const focus = game.current?.state.focus;
+                            if (focus && focus.focus && focus.x == x && focus.y == y){
+                                game.current?.handleFocusRefresh();
+                            }
+                            // if wallet is unchanged, update state
+                            if (wallet.publicKey == currentUser){
+                                setOwnedSpaces(finalOwnedSpaces);
+                                setOwnedMints({...ownedMints, ...newOwnedMints});
+                            }
+                            database.register(wallet.publicKey, newOwnedMints);
                         }
                     }
                     catch (e) {
@@ -455,6 +460,7 @@ export function Screen(props) {
         const asyncBuySpaces = async() => {
             if (purchaseSpacesTrigger["purchasableInfo"]) {
                 if (wallet.publicKey) {
+                    let currentUser = wallet.publicKey;
                     let changes = purchaseSpacesTrigger["purchasableInfo"].map(x => new AcceptOfferArgs(x));
 
                     try {
@@ -463,8 +469,8 @@ export function Screen(props) {
                         let responses = inter.responses;
                         let ixPerTx = inter.ixPerTx;
                         let ind = 0;
-                        let newOwnedSpaces = new Set(ownedSpaces);
-                        let newOwnedMints = {...ownedMints};
+                        let finalOwnedSpaces = new Set(ownedSpaces);
+                        let newOwnedMints = {};
                         for (let i = 0; i < responses.length; i++) {
                             
                             if (i != 0) {
@@ -477,13 +483,17 @@ export function Screen(props) {
                                     let y = changes[ind+j].y;
                                     let spaceMint = changes[ind+j].mint;
                                     let position = JSON.stringify({x, y});
-                                    newOwnedSpaces.add(position);
+                                    finalOwnedSpaces.add(position);
                                     newOwnedMints[position] = spaceMint;
                                 }
                             }
                         }
-                        setOwnedSpaces(newOwnedSpaces);
-                        setOwnedMints(newOwnedMints);
+                        // if wallet is unchanged, update state
+                        if (wallet.publicKey == currentUser){
+                            setOwnedSpaces(finalOwnedSpaces);
+                            setOwnedMints({...ownedMints, ...newOwnedMints});
+                        }
+                        database.register(wallet.publicKey, newOwnedMints);
                     }
                     catch (e) {
                         return;
