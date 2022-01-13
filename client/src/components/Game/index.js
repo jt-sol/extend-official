@@ -981,6 +981,10 @@ export class Game extends React.Component {
     }
 
     register = () => {
+        this.setState({
+            mySpacesOpen: false,
+            mySpacesAnchorEl: null,
+        });
         this.props.setRegisterTrigger(true);
         notify({
             message: "Registering all spaces...",
@@ -1692,11 +1696,15 @@ export class Game extends React.Component {
             />
         }
         else if (this.state.neighborhood.focused) {
+            const n_x = this.state.neighborhood.n_x;
+            const n_y = this.state.neighborhood.n_y;
             info = <NeighborhoodSidebar
             trades = {this.state.neighborhood.trades}
             name = { this.viewport.neighborhood_names[JSON.stringify({ n_x:  this.state.neighborhood.n_x, n_y : this.state.neighborhood.n_y })]} 
-            n_x = {this.state.neighborhood.n_x}
-            n_y = {this.state.neighborhood.n_y}
+            n_x = {n_x}
+            n_y = {n_y}
+            canvas = {this.board.current.canvasCache[JSON.stringify({ n_x, n_y })]}
+            canvasSize = {Math.min(SIDE_NAV_WIDTH, window.innerWidth - 48)}
             addNewFrame={this.addNewFrame}
             />;
         }
@@ -1863,11 +1871,14 @@ export class Game extends React.Component {
                             <Tooltip title="Click to select all your listed spaces" placement="right">
                                 <MenuItem onClick={async () => await this.handleGetMyListings()}>Show Listed Spaces</MenuItem>
                             </Tooltip>
-                            <Tooltip title="Click to refresh your spaces to match their blockchain state" placement="right">
+                            <Tooltip title="Refresh your spaces to match their blockchain state" placement="right">
                                 <MenuItem onClick={async () => await this.handleRefreshUserSpaces()}>Refresh Spaces</MenuItem>
                             </Tooltip>
+                            <Tooltip title="Register your spaces to be able to find your spaces and change their colors" placement="right">
+                                <MenuItem onClick={() => this.register()}>Register Spaces</MenuItem>
+                            </Tooltip>
                         </Menu>
-                        <Tooltip title="Register your spaces to be able to find your spaces and change their colors">
+                        {/* <Tooltip title="Register your spaces to be able to find your spaces and change their colors">
                             <Button
                                 variant="contained"
                                 onClick={() => this.register()}
@@ -1881,7 +1892,7 @@ export class Game extends React.Component {
                             >
                                 Register
                             </Button>
-                        </Tooltip>
+                        </Tooltip> */}
                         {/* <Tooltip title="Refresh your spaces to match their blockchain state">
                             <Button
                                 variant="contained"

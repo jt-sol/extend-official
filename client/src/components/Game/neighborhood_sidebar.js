@@ -7,10 +7,27 @@ export class NeighborhoodSidebar extends React.Component {
   constructor(props) {
     super(props);
   }
+  componentDidMount() {
+    const canvas = document.getElementById("neighborhood-canvas");
+    const context = canvas.getContext("2d", {
+      alpha: false,
+      desynchronized: true,
+    });
+    context.drawImage(this.props.canvas, this.props.canvasSize * 0.25, 0, this.props.canvasSize * 0.5, this.props.canvasSize * 0.5);
+  }
+  componentDidUpdate() {
+    const canvas = document.getElementById("neighborhood-canvas");
+    const context = canvas.getContext("2d", {
+      alpha: false,
+      desynchronized: true,
+    });
+    context.drawImage(this.props.canvas, this.props.canvasSize * 0.25, 0, this.props.canvasSize * 0.5, this.props.canvasSize * 0.5);
+  }
   render() {
     let coordName = `Neighborhood (${this.props.n_x}, ${this.props.n_y})`;
     return (
     <div className="neighborhoodDashboard">
+    <canvas id="neighborhood-canvas" width={this.props.canvasSize} height={this.props.canvasSize * 0.5}/>
     <h1 style={{marginTop: "20px"}}> {this.props.name} </h1>
     <h5> {coordName} </h5>
       <List id="focusSidebarPrefix">
