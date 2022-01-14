@@ -647,13 +647,6 @@ export class Board extends React.Component {
                         neighborhood_scale,
                         neighborhood_scale
                     );
-                } else if (key in this.canvasCache) {
-                    const canvas = this.canvasCache[key];
-                    const context = canvas.getContext("2d", {
-                        alpha: false,
-                        desynchronized: true,
-                    });
-                    context.clearRect(0, 0, canvas.width, canvas.height);
                 }
             }
         }
