@@ -40,6 +40,7 @@ import {
   MINT_PRICE,
   SPACE_METADATA_SEED,
   MAX_REGISTER_ACCS,
+  NEIGHBORHOOD_SIZE,
 } from "../../constants";
 import { Divider } from "antd";
 
@@ -177,7 +178,7 @@ export const Home = (props: HomeProps) => {
     if (nhoodNames && neighborhoods) {
       for (let i = 0; i < neighborhoods.length; i++) {
         const n = neighborhoods[i];
-        keys.push(<MenuItem value={n}>{"Neighborhood (" + n + "): " + nhoodNames[i]}</MenuItem>);
+        keys.push(<MenuItem value={n} key={n}>{"Neighborhood (" + n + "): " + nhoodNames[i]}</MenuItem>);
       }
     }
     return keys;
@@ -189,9 +190,9 @@ export const Home = (props: HomeProps) => {
       for (let i = 0; i < neighborhoods.length; i++) {
         const n = neighborhoods[i];
         if (statuses[i] !== "") {
-          keys.push(<MenuItem value={n} sx={{color: "#E0714F"}}>{"Neighborhood (" + n + "): " + nhoodNames[i] + statuses[i]}</MenuItem>);
+          keys.push(<MenuItem value={n} key={n} sx={{color: "#E0714F"}}>{"Neighborhood (" + n + "): " + nhoodNames[i] + statuses[i]}</MenuItem>);
         } else {
-          keys.push(<MenuItem value={n}>{"Neighborhood (" + n + "): " + nhoodNames[i] + statuses[i]}</MenuItem>);
+          keys.push(<MenuItem value={n} key={n}>{"Neighborhood (" + n + "): " + nhoodNames[i] + statuses[i]}</MenuItem>);
         }
       }
     }
@@ -627,9 +628,16 @@ export const Home = (props: HomeProps) => {
     setDisableToken(true);
     const n: String = e.target.value;
     const split = n.split(',');
-    setNeighborhoodX(parseInt(split[0]));
-    setNeighborhoodY(parseInt(split[1]));
+    const n_x = parseInt(split[0]);
+    const n_y = parseInt(split[1]);
+    setNeighborhoodX(n_x);
+    setNeighborhoodY(n_y);
     setCurrNeighborhood(n);
+    const selector = document.getElementById("selector");
+    if (selector) {
+      selector.style.left = (n_x + 2) * NEIGHBORHOOD_SIZE - border + "px";
+      selector.style.top = (n_y + 2) * NEIGHBORHOOD_SIZE - border + "px";
+    }
   }
   
   // USE EFFECTS
@@ -763,6 +771,61 @@ export const Home = (props: HomeProps) => {
     }
   }, [doneFetching]);
 
+  useEffect(() => {
+    if (neighborhoods) {
+      const getColors = async () => {
+        const frameKeysMap = await server.getFrameKeys(props.connection, neighborhoods.map(x => {
+          const split = x.split(",");
+          return {n_x: parseInt(split[0]), n_y: parseInt(split[1])}
+        }), 0);
+        const frameInfos = Object.keys(frameKeysMap).map(x => JSON.parse(x));
+        const frameKeys = Object.values(frameKeysMap);
+        const frameDatas = await server.batchGetMultipleAccountsInfo(
+          props.connection,
+          frameKeys
+        );
+        const colorMap = {};
+        await Promise.all(
+          frameInfos.map(async (value, i) => {
+            const { n_x, n_y, frame } = value;
+            const key = JSON.stringify({ n_x, n_y });
+            colorMap[key] = await server.getFrameData(frameDatas[i]);
+          })
+        );
+        console.log(colorMap);
+        const canvas = document.getElementById("preview") as HTMLCanvasElement;
+        if (canvas) {
+          const context = canvas.getContext("2d", {
+            alpha: false,
+            desynchronized: true,
+          });
+          if (context) {
+            for (let n_x = -2; n_x < 3; ++n_x) {
+              for (let n_y = -2; n_y < 3; ++n_y) {
+                const key = JSON.stringify({n_x, n_y});
+                if (key in colorMap) {
+                  const map = colorMap[key];
+                  for (let x = 0; x < NEIGHBORHOOD_SIZE; ++x) {
+                    for (let y = 0; y < NEIGHBORHOOD_SIZE; ++y) {
+                      context.fillStyle = map[y][x];
+                      context.fillRect(x + (n_x + 2) * NEIGHBORHOOD_SIZE, y + (n_y + 2) * NEIGHBORHOOD_SIZE, 1, 1);
+                    }
+                  }
+                } else {
+                  context.fillStyle = "#000000";
+                  context.fillRect((n_x + 2) * NEIGHBORHOOD_SIZE, (n_y + 2) * NEIGHBORHOOD_SIZE, NEIGHBORHOOD_SIZE, NEIGHBORHOOD_SIZE);
+                }
+              }
+            }
+          }
+        }
+      }
+      getColors();
+    }
+  }, [neighborhoods]);
+
+  const border = 5;
+
   return (
     <div id="home" className="centered-full">
       <div style={{minWidth: "50%", maxWidth: "50%"}}>
@@ -782,8 +845,9 @@ export const Home = (props: HomeProps) => {
         <Divider/>
       {wallet && <p style={{color: "#D8D687", textAlign: "center"}}><b>Your balance: {(balance || 0).toLocaleString()} SOL</b></p>}
       {wallet && <p style={{color: "#D8D687", textAlign: "center"}}><b>Your Space Vouchers: {totalTokens} </b></p>}
-      <div>
-        <img src={require("../../assets/images/space.gif").default} style={{ marginLeft: "20%", minWidth: "60%", maxWidth: "60%", height: window.innerHeight - 200 + "px" }}></img>
+      <div style={{width: "1000px", height: "1000px", position: "relative"}}>
+        <canvas id="preview" width="1000px" height="1000px"/>
+        <div id="selector" style={{position: "absolute", top: 400 - border + "px", left: 400 - border + "px", width: 200 + 2 * border + "px", height: 200 + 2 * border + "px", border: border + "px dashed white"}}/>
       </div>
       </div>
 
@@ -792,7 +856,7 @@ export const Home = (props: HomeProps) => {
       <div style={{marginRight: "10%"}}>
       {!wallet || (neighborhoodX === undefined && neighborhoodY === undefined) ? (
         <div>
-        <p style={{textAlign: "center"}}>One million Spaces are divided into a 5 x 5 grid of neighborhoods. Each neighborhood contains 200 x 200 (40,000) Spaces and neighborhoods will be minted sequentially over a period of time. Welcome, future Neighbor, have a look around the Canvas and feel free to join the neighborhood by minting your very own Spaces.</p>
+        <p style={{textAlign: "center", fontSize: "40px"}}>One million Spaces are divided into a 5 x 5 grid of neighborhoods. Each neighborhood contains 200 x 200 (40,000) Spaces and neighborhoods will be minted sequentially over a period of time. Welcome, future Neighbor, have a look around the Canvas and feel free to join the neighborhood by minting your very own Spaces.</p>
         <Divider/>
         </div>
       ) : null
@@ -970,7 +1034,17 @@ export const Home = (props: HomeProps) => {
         </Alert>
       </Snackbar>
 
-      <div className="botnav" id="botnav"></div>
+      <div className="botnav" id="botnav" style={{
+        position: "fixed",
+        zIndex: 1,
+        bottom: "50px",
+        right: "50px",
+        width: "100px",
+        display: "flex",
+        flexDirection: "column-reverse",
+        alignItems: "center"
+      }
+      }></div>
     </div>
   );
 };
