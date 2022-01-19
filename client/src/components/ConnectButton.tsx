@@ -14,9 +14,9 @@ export const ConnectButton: React.FC<ConnectButtonProps> = ({
   ...restProps
 }) => {
   return (
-    <ButtonGroup   {...restProps}>
+    <div   {...restProps}>
       <Settings/>
-    </ButtonGroup>
+    </div>
   );
 };
 

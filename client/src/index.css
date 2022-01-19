@@ -20,7 +20,12 @@ code {
     justify-content: center;
     align-items: center;
 }
-
+#myspaces-button{
+    width: 250px;
+}
+#share-button{
+    width: 200px;
+}
 .centered-full {
   width: 100%;
   margin: 0 auto;
@@ -37,4 +42,120 @@ code {
 
 ::-webkit-scrollbar-thumb {
   background: grey;
+}
+
+.headerMenu {
+    background-color: #1A243E !important;
+}
+
+.defaultButton {
+    background: rgba(255, 255, 255, 0.05) !important;
+    color: white !important;
+    padding: 10px 24px !important;
+    border-radius: 40px !important;
+    font-size: 16px !important;
+    letter-spacing: -0.01em !important;;
+    margin-left: 16px !important;
+    text-transform: capitalize !important;
+    line-height: 1.4 !important;
+}
+
+.searchButton {
+    font-size: 16px !important;
+}
+
+.searchButton > span > .ant-input-group-addon:first-child {
+    border-top-left-radius: 45px;
+    border-bottom-left-radius: 45px;
+    background-color: transparent;
+}
+
+
+.searchButton > span > .ant-input-group-addon:last-child, .ant-input-search-button {
+    border-top-right-radius: 45px !important;
+    border-bottom-right-radius: 45px !important;
+    font-size: 16px !important;
+}
+
+.searchButton > span > .ant-input-group-addon:last-child {
+    background-color: transparent !important;
+}
+
+.searchButton > span > .ant-input-group-addon > button {
+    border: 0 !important;
+}
+
+.searchButton .ant-input-group .ant-input-affix-wrapper:not(:first-child), .ant-input-search .ant-input-group .ant-input-affix-wrapper:not(:first-child) {
+    background: rgba(255, 255, 255, 0.05) !important;
+    height: 41px;
+}
+
+
+.ant-input-search-button {
+    height: 41px !important;
+    background: #262f48 !important;
+}
+
+.searchButton > .ant-input-group > .ant-input-affix-wrapper {
+    border: 2px solid #262f48;
+    border-top-left-radius: 45px !important;
+    border-bottom-left-radius: 45px !important;
+    background: transparent !important;
+    font-size: 16px !important;
+    height: 41px;
+}
+
+.searchButton > .ant-input-group > .ant-input-affix-wrapper > input {
+    background: transparent !important;
+    color: white;
+}
+
+.searchButton > .ant-input-group > .ant-input-affix-wrapper > .ant-input-suffix > .anticon-close-circle {
+    color: white;
+}
+
+.gameMenu {
+    border-top: solid 0.1px rgba(0, 0, 0, 0.2);
+}
+
+.animationsSeparator {
+    width: 1px;
+    height: 50%;
+    background-color: rgba(255, 255, 255, 0.1);
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
+.gradientButton {
+    background: linear-gradient(270deg, #FFEBE0 -68.71%, #FFD1D1 26.57%, #FF82F2 149.08%) !important;
+    color: #303030 !important;
+}
+
+.defaultSelect {
+    border-radius: 45px;
+    border: solid 1px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 5px 5px 15px;
+}
+
+.gradientSelect {
+    background-color: rgba(255, 117, 212, 0.16) !important;
+    border: solid 2px #FF75D429;
+}
+
+.gradientSelect > select {
+    color: #FFEBE0;
+}
+.defaultSelect > select {
+    text-transform: capitalize;
+}
+
+.defaultSelect::before {
+    border-bottom: 0 !important;
+}
+
+.headerLogoLeft{
+    margin-right: 10px;
 }

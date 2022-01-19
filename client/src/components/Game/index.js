@@ -34,6 +34,8 @@ import { NeighborhoodSidebar } from './neighborhood_sidebar.js';
 import { solToLamports, lamportsToSol, xor} from "../../utils";
 import {loading} from '../../utils/loading';
 import { letterSpacing } from "@mui/system";
+import { InfoOutlined } from "@mui/icons-material";
+import Search from "antd/es/input/Search";
 
 const SIDE_NAV_WIDTH = 400;
 
@@ -1734,19 +1736,6 @@ export class Game extends React.Component {
                     }}
                     locator={this.props.locator}
                 />
-                <img style={{
-                    position: "fixed",
-                    height: (window.innerWidth < 2000 ? UPPER - 100 + window.innerWidth / 40 : UPPER - 50),
-                    top: 25,
-                    left: "50%",
-                    marginLeft: -170
-                }}
-                                        src={
-                                        require("../../assets/images/logo.svg")
-                                            .default
-                                        }
-                                        alt="EXTEND"
-                                    />
                 <div
                     className="sidenav"
                     style={{ width: this.state.showNav ? Math.min(SIDE_NAV_WIDTH, window.innerWidth - 48) : 0 }}
@@ -1763,6 +1752,7 @@ export class Game extends React.Component {
                         bgcolor: "action.disabledBackground",
                     }}
                     minWidth="100%"
+                    className={"headerMenu"}
                 >
                     <Box
                         sx={{
@@ -1782,7 +1772,7 @@ export class Game extends React.Component {
                                         checked={this.state.anims}
                                     />
                                 }
-                                label="ANIMATIONS"
+                                label="Animations"
                             />
                         </FormControl>
                         <Tooltip title="Select frame to view" placement="top">
@@ -1836,7 +1826,9 @@ export class Game extends React.Component {
                                 My Listings
                             </Button>
                         </Tooltip> */}
-                        <Menu
+                            <div className={"animationsSeparator"}></div>
+
+                            <Menu
                             id="myspaces-menu"
                             aria-labelledby="myspaces-button"
                             anchorEl={this.state.mySpacesAnchorEl}
@@ -1904,67 +1896,51 @@ export class Game extends React.Component {
                             marginRight: "36px", // TODO
                         }}
                     >
-                    
                         <Tooltip title="Copy link to share spaces with others">
                             <Button
-                            variant="contained"
-                            sx={{
-                                marginRight: "10px",
-                                borderRadius: "40px",
-                                color: "#FFFFFF",
-                                background: "linear-gradient(to right bottom, #36EAEF7F, #6B0AC97F)",
-                            }}
-                            id="share-button"
-                            aria-controls={this.state.menuOpen ? 'share-menu' : undefined}
-                            aria-haspopup="true"
-                            aria-expanded={this.state.menuOpen ? 'true' : undefined}
-                            onClick={(e) => this.handleMenuOpen(e)}
-                            endIcon={<KeyboardArrowDownIcon />}
+                                variant="contained"
+                                className={"defaultButton"}
+                                id="share-button"
+                                aria-controls={this.state.menuOpen ? 'share-menu' : undefined}
+                                aria-haspopup="true"
+                                aria-expanded={this.state.menuOpen ? 'true' : undefined}
+                                onClick={(e) => this.handleMenuOpen(e)}
+                                endIcon={<KeyboardArrowDownIcon />}
                             >
                                 <CopyOutlined />
                                 Share
                             </Button>
                         </Tooltip>
                         <Menu
-                        id="share-menu"
-                        aria-labelledby="share-button"
-                        anchorEl={this.state.menuAnchorEl}
-                        open={this.state.menuOpen}
-                        onClose={() => this.handleMenuClose()}
+                            id="share-menu"
+                            aria-labelledby="share-button"
+                            anchorEl={this.state.menuAnchorEl}
+                            open={this.state.menuOpen}
+                            onClose={() => this.handleMenuClose()}
                         >
                             <MenuItem onClick={(e) => this.copyCurrentView()}>Current View</MenuItem>
                             <MenuItem onClick={(e) => this.copyMyView()}>My Spaces</MenuItem>
                         </Menu>
-                        <Tooltip title="Enter a user's wallet address to select their spaces or a location in the form of x,y and press ENTER">
-                        <TextField
-                            id="address-textfield"
-                            onKeyPress={(ev) => {
-                                if (ev.key === 'Enter') {
-                                    this.handleFindSpaces();
-                                }}}
-                            InputProps={{
-                                startAdornment: (
-                                    <InputAdornment position="start">
-                                        <SearchIcon />
-                                    </InputAdornment>
-                                ),
-                            }}
-                            // placeholder="SPCE5rvxKQJRn2uubgNRAD9KrP8RMXmkucy9TuCXD6e"
-                            variant="standard"
-                        />
+                        <Tooltip
+
+                            title="Enter a user's wallet address to select their spaces or enter a location in the form of x,y">
+                            <InfoOutlined id="search-tooltip" />
                         </Tooltip>
-                        
+                        <Search
+                            id="address-textfield"
+                            placeholder="SPCE5rvxKQJRn2uubgNRAD9KrP8RMXmkucy9TuCXD6e"
+                            allowClear
+                            enterButton="Find address"
+                            onSearch={() => this.findSpaces()}
+                            disabled={this.state.findSpaces}
+                            className="searchButton"
+                        />
 
                         <Tooltip title="Click for your spaces">
                             <Button
                                 variant="contained"
-                                disabled={!this.props.user || !this.props.loadedOwned || this.state.refreshingUserSpaces}
-                                sx={{
-                                    marginRight: "10px",
-                                    borderRadius: "40px",
-                                    color: "#FFFFFF",
-                                    background: "linear-gradient(to right bottom, #36EAEF7F, #6B0AC97F)",
-                                }}
+                                disabled={!this.props.loadedOwned || this.state.refreshingUserSpaces}
+                                className={"defaultButton"}
                                 id="myspaces-button"
                                 aria-controls={this.state.mySpacesOpen ? 'myspaces-menu' : undefined}
                                 aria-haspopup="true"
@@ -1972,7 +1948,7 @@ export class Game extends React.Component {
                                 onClick={(e) => this.handleMySpacesOpen(e)}
                                 endIcon={<KeyboardArrowDownIcon />}
                             >
-                                My Spaces ({nspaces})
+                                My Spaces
                             </Button>
                         </Tooltip>
                     </Box>}
