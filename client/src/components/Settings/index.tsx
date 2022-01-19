@@ -27,19 +27,6 @@ export function Settings({
         <Box sx={{ display: "flex", minWidth: "100%" }}>
           {!connected && (
               <>
-                <FormControl>
-                  <NativeSelect
-                      className={"defaultSelect gradientSelect"}
-                      onChange={(e) => {
-                        setEndpoint(e.target.value);
-                      }}
-                      value={endpoint}
-                  >
-                    {ENDPOINTS.map(({ name, endpoint }) => (
-                        <option key={name} value={endpoint}>{name}</option>
-                    ))}
-                  </NativeSelect>
-                </FormControl>
                 <Button
                     variant="contained"
                     onClick={handleConnect}
