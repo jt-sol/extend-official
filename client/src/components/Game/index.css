@@ -107,6 +107,12 @@
     /* filter: blur(1rem); */
 }
 
+.notifications-sidenav{
+    height: 100%;
+    left: inherit;
+    right: 24px;
+}
+
 .sidenav .position {
     display: block;
     margin: 20px;
@@ -196,4 +202,8 @@
 }
 .topnav .address, textarea {
     background: transparent;
+}
+
+#search-tooltip{
+    margin-left: 10px;
 }

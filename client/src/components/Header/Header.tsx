@@ -1,13 +1,13 @@
-import React, {useCallback, useState} from "react";
-import {Box} from "@mui/system";
+import React, { useCallback, useState } from "react";
+import { Box } from "@mui/system";
 
 import ConnectButton from "../ConnectButton";
-import {ModalEnum, useModal, useWalletModal} from "../../contexts";
-import {useWallet} from "@solana/wallet-adapter-react";
-import {Tab, Tabs} from "@mui/material";
-import {Link, useLocation} from "react-router-dom";
+import { ModalEnum, useModal, useWalletModal } from "../../contexts";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { Link, useLocation } from "react-router-dom";
+import { Tab, Tabs } from "@mui/material";
 
-export const Header: React.FC = () => {
+export const Header = (props: { setNotificationsBar?: (type: string) => void }) => {
   const { setModal } = useModal();
   const { setVisible } = useWalletModal();
   const wallet = useWallet();
@@ -15,7 +15,7 @@ export const Header: React.FC = () => {
   const location = useLocation();
   const paths = location.pathname.split('/');
   // const head = paths[1] ? "/" + paths[1] : "";
-  const tail = paths[paths.length-1] ? paths[paths.length-1] : ""
+  const tail = paths[paths.length - 1] ? paths[paths.length - 1] : ""
 
   const handleChange = useCallback(() => setVisible(true), [setVisible]);
 
@@ -40,64 +40,64 @@ export const Header: React.FC = () => {
     setTabState(value);
   };
 
-  const isMobile = window.innerWidth < 500;
-  return (<Box
-      sx={{
-        display: "flex",
-        bgcolor: "action.disabledBackground",
-      }}
-      minWidth="100%"
-    >
-      {isMobile ? 
-      <Box sx={{height: "62px"}}> </Box> :
-      <>
+  return (
       <Box
-        sx={{
-          display: "flex",
-          height: "62px",
-          justifyContent: "flex-start",
-          alignItems: "center",
-        }}
-      > 
-         <img
-          src={
-            require("../../assets/images/logo_small.svg")
-            .default
-            }
-            alt="EXTEND"
-         />
-         <Tabs value={tabState} 
-          onChange={handleTab} 
-          indicatorColor="secondary"
-          TabIndicatorProps={{
-            style: {
-              backgroundColor: "#DC1FFF"
-             }
-            }} >
-          <Link to={"/"} style={{ color: '#CE65B0' }}><Tab value={0} label="Canvas" sx={{fontWeight: "bold"}}/></Link>
-          <Link to={"/activity"} style={{ color: '#CE65B0' }}><Tab value={1} label="Activity" sx={{fontWeight: "bold"}}/></Link>
-          <Link to={"/mint"} style={{ color: '#CE65B0' }}><Tab value={2} label="Mint" sx={{fontWeight: "bold"}}/></Link>
-          </Tabs>
-      </Box>
-      <Box sx={{ flexGrow: 1 }}></Box>
-      <Box
-        sx={{
-          display: "flex",
-          height: "62px",
-          justifyContent: "flex-end",
-          alignItems: "center",
-        }}
+          sx={{
+            display: "flex",
+            bgcolor: "action.disabledBackground",
+          }}
+          className={"headerMenu gameMenu"}
+          minWidth="100%"
       >
-      <ConnectButton
-        isConnected={connected}
-        sx={{ marginRight: "36px" }}
-        onClickConnect={handleConnect}
-        onClickChange={handleChange}
-      />
+        <Box
+            sx={{
+              display: "flex",
+              height: "62px",
+              justifyContent: "flex-start",
+              alignItems: "center",
+            }}
+        >
+          <div style={{ marginLeft: 36, display: "flex" }}>
+            <img className={"headerLogoLeft"} src={"header/logo.svg"} />
+            <Tabs value={tabState}
+                  onChange={handleTab}
+                  indicatorColor="secondary"
+                  TabIndicatorProps={{
+                    style: {
+                      backgroundColor: "#DC1FFF"
+                    }
+                  }}>
+              <Link to={"/"} style={{ color: '#CE65B0' }}>
+                <Tab value={0} label="Canvas" sx={{ fontWeight: "bold" }} />
+              </Link>
+              <Link to={"/activity"} style={{ color: '#CE65B0' }}>
+                <Tab value={1} label="Activity" sx={{ fontWeight: "bold" }} />
+              </Link>
+              <Link to={"/mint"} style={{ color: '#CE65B0' }}>
+                <Tab value={2} label="Mint" sx={{ fontWeight: "bold" }} />
+              </Link>
+
+            </Tabs>
+          </div>
+        </Box>
+        <Box sx={{ flexGrow: 1 }}></Box>
+        <Box
+            sx={{
+              display: "flex",
+              height: "62px",
+              justifyContent: "flex-end",
+              alignItems: "center",
+            }}
+        >
+          <ConnectButton
+              isConnected={connected}
+              sx={{ marginRight: "36px" }}
+              style={{ marginRight: 36 }}
+              onClickConnect={handleConnect}
+              onClickChange={handleChange}
+          />
+        </Box>
       </Box>
-      </>
-    }
-    </Box>
   );
 };
 
