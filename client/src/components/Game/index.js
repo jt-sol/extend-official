@@ -1208,10 +1208,11 @@ export class Game extends React.Component {
     handleChangeImg = (e) => {
         let files = e.target.files; // FileList object
 
-        // use the 1st file from the list
-        let f = files[0];
-
-        this.setState({ img_upl: f, has_img: true });
+        // use the 1st file from the list if it exists
+        if (files.length > 0) {
+            let f = files[0];
+            this.setState({ img_upl: f, has_img: true });
+        }
     }
 
     handleChangeFocusPrice = (e) => {
@@ -1417,6 +1418,8 @@ export class Game extends React.Component {
                     floorM: 1,
                     floorN: 1,
                 },
+                img_upl: null,
+                has_img: false,
             });
         }
     }
