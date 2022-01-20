@@ -4,6 +4,8 @@ import JSConfetti from 'js-confetti';
 
 // import Link from '../components/Link';
 
+notification.config({maxCount: 2});
+
 export function notify({
   message = '',
   description = undefined as any,
@@ -56,7 +58,7 @@ export function register_succeed_notify({
       <span>{description}</span>
     ),
     placement,
-    duraction: null,
+    duration,
   });
 
   const jsConfetti = new JSConfetti()
