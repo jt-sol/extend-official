@@ -921,6 +921,27 @@ export class Game extends React.Component {
         });
     }
 
+    moveToSpaces = (spaces) => {
+        if (spaces.size > 0) {
+            this.resetSelecting();
+            this.setSelecting(new Set(spaces));
+            const bounds = getBounds(spaces);
+            requestAnimationFrame(() => {
+                this.board.current.drawCanvasCache({
+                    x: bounds.left,
+                    y: bounds.top,
+                    width: bounds.right - bounds.left + 1,
+                    height: bounds.bottom - bounds.top + 1,
+                });
+                this.board.current.drawSelected();
+            });
+        } else {
+            notify({
+                message: "No Spaces Selected",
+            });
+        }
+    }
+
     handleGetMySpaces = async () => {
         if (!this.props.user){
             return;
@@ -944,24 +965,7 @@ export class Game extends React.Component {
         this.props.setOwnedSpaces(spaces); // set spaces and mints on hooks side
         this.props.setOwnedMints(mints);
 
-        if (spaces.size > 0) {
-            this.resetSelecting();
-            this.setSelecting(new Set(spaces));
-            const bounds = getBounds(spaces);
-            requestAnimationFrame(() => {
-                this.board.current.drawCanvasCache({
-                    x: bounds.left,
-                    y: bounds.top,
-                    width: bounds.right - bounds.left + 1,
-                    height: bounds.bottom - bounds.top + 1,
-                });
-                this.board.current.drawSelected();
-            });
-        } else {
-            notify({
-                message: "No Spaces owned",
-            });
-        }
+        this.moveToSpaces(spaces);
         loading(null, "Getting your Spaces", "success");
     }
 
@@ -986,24 +990,7 @@ export class Game extends React.Component {
         }
         const spaces = data.spaces;
 
-        if (spaces.size > 0) {
-            this.resetSelecting();
-            this.setSelecting(new Set(spaces));
-            const bounds = getBounds(spaces);
-            requestAnimationFrame(() => {
-                this.board.current.drawCanvasCache({
-                    x: bounds.left,
-                    y: bounds.top,
-                    width: bounds.right - bounds.left + 1,
-                    height: bounds.bottom - bounds.top + 1,
-                });
-                this.board.current.drawSelected();
-            });
-        } else {
-            notify({
-                message: "No Spaces listed",
-            });
-        }
+        this.moveToSpaces(spaces);
         loading(null, "Getting your listings", "success");
     }
 
@@ -1843,36 +1830,6 @@ export class Game extends React.Component {
                         </Tooltip>
                         {!this.mobile &&
                         <>
-                        {/* <Tooltip title="Click to select all your spaces">
-                            <Button
-                                variant="contained"
-                                onClick={async () => await this.handleGetMySpaces()}
-                                disabled={!this.props.loadedOwned}
-                                sx={{
-                                    marginRight: "10px",
-                                    borderRadius: "40px",
-                                    color: "#FFFFFF",
-                                    background: "linear-gradient(to right bottom, #36EAEF7F, #6B0AC97F)",
-                                }}
-                            >
-                                My Spaces
-                            </Button>
-                        </Tooltip>
-                        <Tooltip title="Click to select all your listed spaces">
-                            <Button
-                                variant="contained"
-                                onClick={async () => await this.handleGetMyListings()}
-                                disabled={!this.props.loadedOwned}
-                                sx={{
-                                    marginRight: "10px",
-                                    borderRadius: "40px",
-                                    color: "#FFFFFF",
-                                    background: "linear-gradient(to right bottom, #36EAEF7F, #6B0AC97F)",
-                                }}
-                            >
-                                My Listings
-                            </Button>
-                        </Tooltip> */}
                             <div className={"animationsSeparator"}></div>
 
                             <Menu
@@ -1895,35 +1852,6 @@ export class Game extends React.Component {
                                 <MenuItem onClick={() => this.register()}>Register Spaces</MenuItem>
                             </Tooltip>
                         </Menu>
-                        {/* <Tooltip title="Register your spaces to be able to find your spaces and change their colors">
-                            <Button
-                                variant="contained"
-                                onClick={() => this.register()}
-                                disabled={!this.props.loadedOwned}
-                                sx={{
-                                    marginRight: "10px",
-                                    borderRadius: "40px",
-                                    color: "#FFFFFF",
-                                    background: "linear-gradient(to right bottom, #36EAEF7F, #6B0AC97F)",
-                                }}
-                            >
-                                Register
-                            </Button>
-                        </Tooltip> */}
-                        {/* <Tooltip title="Refresh your spaces to match their blockchain state">
-                            <Button
-                                variant="contained"
-                                onClick={this.handleRefreshUserSpaces}
-                                disabled={!this.props.loadedOwned || this.state.refreshingUserSpaces}
-                                sx={{
-                                    borderRadius: "40px",
-                                    color: "#FFFFFF",
-                                    background: "linear-gradient(to right bottom, #36EAEF7F, #6B0AC97F)",
-                                }}
-                            >
-                                Refresh
-                            </Button>
-                        </Tooltip> */}
                         </>}
                         <Tooltip title="Number of viewers">
                             <Box sx={{marginLeft: "10px"}}>
@@ -1998,6 +1926,19 @@ export class Game extends React.Component {
                     </Box>}
                 </Box>
                 <div className="botnav" id="botnav"></div>
+                {/* <div className="topnav" id="topnav">
+                    <Button sx={{color: "white"}} onClick={() => {
+                        this.moveToSpaces(this.state.selecting.poses)}}> All Selected</Button>
+                    <Button sx={{color: "blue"}} onClick={() => {
+                        this.moveToSpaces(new Set([...this.state.selecting.poses].filter(x=> this.props.ownedSpaces.has(x))))}}> Owned </Button>
+                    <Button sx={{color: "yellow"}} onClick={() => {
+                        this.moveToSpaces(this.state.selecting.purchasable)
+                    }}> Purchasable</Button>
+                    <Button sx={{color: "red"}} onClick={() => {
+                        this.moveToSpaces(new Set([...this.state.selecting.poses].filter(
+                            x=> (!this.props.ownedSpaces.has(x)) && (!this.state.selecting.purchasable.has(x)))))}}> Other </Button>
+                    <Button sx={{color: "white"}}> Neighborhood </Button> 
+                </div> */}
             </div>
         );
     }
