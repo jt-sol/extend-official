@@ -58,7 +58,7 @@ const Home: NextPage = () => {
                             </p>   
                             <p className={styles.headerText}>
                             A million Spaces will be minted for FREE on the blazing fast Solana network, the largest NFT mint
-                            to date. Mint a single Space or collect a whole neighborhood right from the canvas.
+                            to date. Mint a single Space or collect a whole Neighborhood right from the canvas.
                                 {/* Extend NFTs into a new dimension.
                                 Extend evokes that shift from static jpg to dynamic utility...
                                 from a profile picture flex to a living artifact of culture and community.
@@ -88,7 +88,7 @@ const Home: NextPage = () => {
 
                     </Col>
                     <Col sm={24} md={13} lg={13} xl={11} className={`${styles.sectionContent} ${styles.spaceContent}`}>
-                        <h1>Become a neighbor</h1>
+                        <h1>Become a Neighbor</h1>
                         <p>
                         Spaces are programmable. To start 
                             each Space gives the Space owner the ability to modify the color of a single pixel on our 1000 x 1000 Canvas.
@@ -245,9 +245,9 @@ const Home: NextPage = () => {
                             </Accordion.Body>
                           </Accordion.Item>
                           <Accordion.Item eventKey="2" className={styles.accordionItem}>
-                            <Accordion.Header>Why can’t I buy my neighbor’s Space?</Accordion.Header>
+                            <Accordion.Header>Why can’t I buy my Neighbor’s Space?</Accordion.Header>
                             <Accordion.Body style={{backgroundColor: "black"}}>
-                            By default a Space is not listed. Your neighbor needs to register the Space in question
+                            By default a Space is not listed. Your Neighbor needs to register the Space in question
                                     and list it for sale.
                             </Accordion.Body>
                           </Accordion.Item>

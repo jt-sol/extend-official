@@ -942,9 +942,9 @@ export class Board extends React.Component {
                     </DialogTitle>
                     <DialogContent>
                         <DialogContentText>
-                            To expand to this neighborhood, first initialize the candy machine
+                            To expand to this Neighborhood, first initialize the candy machine
                             config and paste its address here, and we'll handle the rest. Make
-                            sure the config corresponds to the selected neighborhood, and that the current
+                            sure the config corresponds to the selected Neighborhood, and that the current
                             wallet is the authority of the config!
                         </DialogContentText>
                         <TextField
