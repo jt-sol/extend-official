@@ -679,7 +679,7 @@ export class Game extends React.Component {
     expand = (neighborhood) => {
         this.props.setNewNeighborhoodTrigger(neighborhood);
         notify({
-            message: "Initializing new neighborhood...",
+            message: "Initializing new Neighborhood...",
         });
 
         // const n_x = Math.floor(this.focus.x / NEIGHBORHOOD_SIZE);
