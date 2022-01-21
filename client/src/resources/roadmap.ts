@@ -4,7 +4,7 @@ const RoadMapContent = [
     title: 'Genesis Neighborhood',
     state : "In progress",
     goal: "Early user feedback and testing of base functionalities.",
-    description: 'The Genesis Neighborhood of 200x200 spaces will be minted by the Metaplex Candy Machine.'
+    description: 'The Genesis Neighborhood of 200x200 Spaces will be minted by the Metaplex Candy Machine.'
   },
   {
     date: '08/31/1996',
