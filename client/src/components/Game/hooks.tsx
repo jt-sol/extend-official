@@ -71,22 +71,35 @@ export function Screen(props) {
     const [viewer, setViewer] = useState(0);
 
     const game = useRef<Game>(null);
+    const crypto = require("crypto");
+
+    const getId = () => {
+        const currId = localStorage.getItem("id");
+        if (currId !== null) {
+            return currId;
+        } 
+        const id = crypto.randomBytes(20).toString('hex');
+        console.log("New", id)
+        localStorage.setItem("id", id);
+        return id;
+    }
 
     useEffect(() => {
         const cleanup = async () => {
             if (document.visibilityState === "hidden") {
-                await database.disconnect();
+                await database.disconnectNew(getId());
             } else if (document.visibilityState === "visible") {
-                await database.connect();
+                const viewers = await database.connectNew(getId());
+                setViewer(viewers);
             }
         }
         const getViewer = async () => {
-            const response = await database.connect();
-            setViewer(response.data.number);
+            const viewers = await database.connectNew(getId());
+            setViewer(viewers);
             document.addEventListener('visibilitychange', cleanup);
         }
         const unMount = () => {
-            database.disconnect();
+            database.disconnectNew(getId());
             mounted.current = false;
             document.removeEventListener('visibilitychange', cleanup);
         }
