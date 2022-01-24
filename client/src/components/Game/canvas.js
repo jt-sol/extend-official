@@ -660,8 +660,10 @@ export class Board extends React.Component {
                         currentMap[key],
                         this.canvasCache[key]
                     );
+                }
+                if (key in this.canvasCache) {
                     context.drawImage(
-                        tmpCanvas,
+                        this.canvasCache[key],
                         this.x + n_x * neighborhood_scale,
                         this.y + n_y * neighborhood_scale,
                         neighborhood_scale,
