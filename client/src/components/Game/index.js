@@ -74,8 +74,10 @@ export const getBounds = (spaces) => {
 export class Game extends React.Component {
     constructor(props) {
         super(props);
-        this.intervalId1 = 0;
-        this.intervalId2 = 0;
+        this.intervalFetchColors = 0;
+        this.intervalFetchNeighborhoodNames = 0;
+        this.intervalFetchPrices = 0;
+        this.intervalChangeFrame = 0;
         this.state = {
             neighborhood_colors: {},
             showNav: false,
@@ -1175,7 +1177,7 @@ export class Game extends React.Component {
         let k = this.state.frame;
 
         if (anims) {
-            clearInterval(this.intervalId2);
+            clearInterval(this.intervalFetchColors);
             loading(null, "Loading frames", null);
             await this.fetch_colors_all_frames();
             loading(null, "Loading frames", "success");
@@ -1183,10 +1185,6 @@ export class Game extends React.Component {
                 if (document.hidden){
                     return;
                 }
-
-                // TODO: do the rendering of this.viewport.neighborhood_colors_all_frames by key, of multiple frames stored
-                // set neighborhood_colors equal to specific frames of neighborhood_colors_all_frames?
-
                 const start = this.viewport.neighborhood_start;
                 const end = this.viewport.neighborhood_end;
 
@@ -1207,14 +1205,17 @@ export class Game extends React.Component {
                 k = k + 1;
             }, ANIMATION_INTERVAL);
         } else {
-            clearInterval(this.intervalId1);
+            clearInterval(this.intervalChangeFrame);
             await this.fetch_colors(this.state.frame);
             requestAnimationFrame(() => {
                 this.board.current.drawCanvas();
             });
-            this.intervalId2 = setInterval(async () => {
+            this.intervalFetchColors = setInterval(async () => {
+                if (document.hidden){
+                    return;
+                }
                 await this.fetch_colors(this.state.frame);
-            }, 10000);
+            }, FETCH_COLORS_INTERVAL);
         }
         this.setState({
             anims: anims,
@@ -1671,10 +1672,18 @@ export class Game extends React.Component {
         });
     }
     setPriceView = () => {
-        this.handleChangeAnims({target: {checked: false}});
+        clearInterval(this.intervalChangeFrame);
+        this.intervalFetchColors = setInterval(async () => {
+            if (document.hidden){
+                return;
+            }
+            await this.fetch_colors(this.state.frame);
+        }, FETCH_COLORS_INTERVAL);
         this.viewport.view = 1;
         this.board.current.resetCanvas();
         this.setState({
+            anims: false,
+            animsInfoLoaded: true,
             viewMenuOpen: false,
             viewMenuAnchorEl: null,
         });

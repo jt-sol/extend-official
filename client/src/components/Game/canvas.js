@@ -469,7 +469,16 @@ export class Board extends React.Component {
     }
 
     resetCanvas(){
-        this.canvasCache = { t: Date.now() };
+        for (let key in this.canvasCache) {
+            if (key !== "t") {
+                const tmpCanvas = this.canvasCache[key];
+                const tmpContext = tmpCanvas.getContext("2d", {
+                    alpha: false,
+                    desynchronized: true,
+                });
+                tmpContext.clearRect(0, 0, tmpCanvas.width, tmpCanvas.height);
+            }
+        }
         requestAnimationFrame(() => this.drawCanvas());
     }
 
