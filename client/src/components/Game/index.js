@@ -40,9 +40,9 @@ import { InfoOutlined } from "@mui/icons-material";
 import Search from "antd/es/input/Search";
 
 const SIDE_NAV_WIDTH = 400;
-const FETCH_COLORS_INTERVAL = 10000;
-const FETCH_NAMES_INTERVAL = 60000;
-const FETCH_PRICES_INTERVAL = 15000;
+const FETCH_COLORS_INTERVAL = 10 * 1000;
+const FETCH_NAMES_INTERVAL = 60 * 1000;
+const FETCH_PRICES_INTERVAL = 3 * 60 * 1000;
 const ANIMATION_INTERVAL = 300;
 
 export const getBounds = (spaces) => {
@@ -326,7 +326,6 @@ export class Game extends React.Component {
             let key = JSON.stringify({n_x, n_y});
             this.viewport.neighborhood_prices[key] = data;
         }
-
     }
 
     // updateAccount = async (account) => {
