@@ -1890,13 +1890,14 @@ export class Game extends React.Component {
                     minWidth="100%"
                     className={"headerMenu"}
                 >
+                    
                     <Box
                         sx={{
                             display: "flex",
                             height: "63px",
                             justifyContent: "flex-start",
                             alignItems: "center",
-                            marginLeft: "36px", // TODO
+                            marginLeft: "20px", // TODO
                         }}
                     >
                         <Tooltip title="Change view">
@@ -1909,6 +1910,7 @@ export class Game extends React.Component {
                                 aria-expanded={this.state.viewMenuOpen ? 'true' : undefined}
                                 onClick={(e) => this.handleViewMenuOpen(e)}
                                 endIcon={<KeyboardArrowDownIcon />}
+                                sx={{marginRight: "10px"}}
                             >
                                 {this.viewport.view == 0 ? "Colors" : "Prices"}
                             </Button>
@@ -1923,18 +1925,6 @@ export class Game extends React.Component {
                             <MenuItem onClick={(e) => this.setColorView()}>Colors</MenuItem>
                             <MenuItem onClick={(e) => this.setPriceView()}>Prices</MenuItem>
                         </Menu>
-                    </Box>
-
-                    
-                    <Box
-                        sx={{
-                            display: "flex",
-                            height: "63px",
-                            justifyContent: "flex-start",
-                            alignItems: "center",
-                            marginLeft: "36px", // TODO
-                        }}
-                    >
                         <FormControl>
                             <FormControlLabel
                                 disabled={!this.state.animsInfoLoaded || this.viewport.view != 0}
