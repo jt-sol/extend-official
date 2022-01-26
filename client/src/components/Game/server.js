@@ -13,6 +13,8 @@ import {
     NEIGHBORHOOD_SIZE,
     SELL_DELEGATE_SEED,
     BATCH_LOAD_PRICE_SIZE,
+    RENT_ACCOUNT_SEED,
+    RENT_PROGRAM_ID,
 } from "../../constants";
 import {TOKEN_PROGRAM_ID} from '@solana/spl-token';
 import {decodeMetadata} from "../../actions/metadata";
@@ -301,7 +303,7 @@ export class Server {
         return '#' + rgb.toString('hex');
     }
 
-    convert(Uint8Arr) {
+    bytesToNumber(Uint8Arr) {
         var length = Uint8Arr.length;
 
         let buffer = Buffer.from(Uint8Arr);
@@ -338,7 +340,7 @@ export class Server {
             let price = 0;
             if (delegate.toBase58() === sell_del[0].toBase58()) {
                 has_price = true;
-                price = this.convert(account.data.slice(33, 33+8));
+                price = this.bytesToNumber(account.data.slice(33, 33+8));
             }
 
             // const metadata = (await PublicKey.findProgramAddress([
@@ -362,6 +364,73 @@ export class Server {
             return null;
         }
     }
+
+    async getRentInfo(connection, x, y, owner) {
+        const rent_account = await PublicKey.findProgramAddress([
+                BASE.toBuffer(),
+                Buffer.from(RENT_ACCOUNT_SEED),
+                twoscomplement_i2u(x),
+                twoscomplement_i2u(y),
+            ],
+            RENT_PROGRAM_ID
+        );
+        //console.log(spaceMetadata[0].toBase58());
+        const account = await connection.getAccountInfo(rent_account[0]);
+        if (account) {
+            let rentPrice = this.bytesToNumber(account.data.slice(1, 1 + 8));
+            let minDuration = this.bytesToNumber(account.data.slice(9, 9 + 8));
+            let maxDuration = this.bytesToNumber(account.data.slice(17, 17 + 8));
+            let maxTimestamp = this.bytesToNumber(account.data.slice(25, 25 + 8));
+            let renter = new PublicKey(account.data.slice(33, 33 + 32));
+            let rentEnd = this.bytesToNumber(account.data.slice(65, 65 + 8));
+            let rentee = new PublicKey(account.data.slice(73, 73 + 32));
+            console.log(rentPrice);
+
+
+            let hasRentPrice = false;
+            if (owner.toBase58() === renter.toBase58()) {
+                hasRentPrice = true;
+            }
+            else{
+                rentPrice = 0;
+            }
+            console.log(hasRentPrice);
+
+            // const metadata = (await PublicKey.findProgramAddress([
+            //     Buffer.from("metadata"),
+            //     METADATA_PROGRAM_ID.toBuffer(),
+            //     mint.toBytes()
+            // ], METADATA_PROGRAM_ID))[0];
+
+            // const metadataInfo = await connection.getAccountInfo(metadata);
+            // const meta = decodeMetadata(metadataInfo.data);
+            // console.log(meta.data);
+
+            return {
+                rentPrice,
+                minDuration,
+                maxDuration,
+                maxTimestamp,
+                renter,
+                rentEnd,
+                rentee,
+                hasRentPrice,
+                //swappable: (!!account.data[42]),
+            }
+        } else {return {
+            rentPrice: null,
+            minDuration: null,
+            maxDuration: null,
+            maxTimestamp: null,
+            renter: null,
+            rentEnd: null,
+            rentee: null,
+            hasRentPrice: false,
+            //swappable: (!!account.data[42]),
+        }
+        }
+    }
+
 
     async getSpaceInfos(connection, poses){
         try {
@@ -390,7 +459,7 @@ export class Server {
                 let spaceData = spaceDatas[j];
                 if (spaceData) {
                     let mint = new PublicKey(spaceData.data.slice(1,33));
-                    let price = this.convert(spaceData.data.slice(33, 33+8));
+                    let price = this.bytesToNumber(spaceData.data.slice(33, 33+8));
                     // if (price > 0){
                     //     priceDatas.push({mint, price, ...JSON.parse(newposes_array[j])});
                     // }
@@ -520,7 +589,7 @@ export class Server {
             const validTokens = [];
             for (let t of tokens.value) {
                 // if quantity is 1 and it is not in the token cache
-                if (this.convert(t.account.data.slice(64, 72)) === 1 && !tokenCache.has(t.pubkey.toBase58())) {
+                if (this.bytesToNumber(t.account.data.slice(64, 72)) === 1 && !tokenCache.has(t.pubkey.toBase58())) {
                     validTokens.push(t);
                 }
             }
