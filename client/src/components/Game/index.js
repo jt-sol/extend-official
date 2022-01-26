@@ -90,11 +90,18 @@ export class Game extends React.Component {
                 owned: false,
                 hasPrice: false,
                 price: null,
-                swappable: false,
                 mint: null,
                 infoLoaded: false,
                 imgLoaded: false,
                 neighborhood_name: null,
+                hasRentPrice: false,
+                rentPrice: null,
+                minDuration: null,
+                maxDuration: null,
+                maxTimestamp: null,
+                renter: null,
+                rentEnd: null,
+                rentee: null,
             },
             selecting: {
                 selecting: false,
@@ -658,11 +665,39 @@ export class Game extends React.Component {
                 x: this.state.focus.x,
                 y: this.state.focus.y,
                 price: solToLamports(price),
-                delist: false,
+                create: true,
                 mint: this.state.focus.mint,
             });
             notify({
                 message: "Setting price...",
+            });
+        }
+    }
+    changeRentPrice = () => {
+        let rentPrice = Number(this.state.focus.rentPrice);
+        if (isNaN(rentPrice)) {
+            notify({
+                message: "Warning:",
+                description: `Could not parse rent price ${this.state.focus.rentPrice}`,
+            });
+        } else if (rentPrice <= 0) {
+            notify({
+                message: "Warning:",
+                description: "Can only set to positive amount of SOL",
+            });
+        } else {
+            this.props.setChangeRentTrigger({
+                x: this.state.focus.x,
+                y: this.state.focus.y,
+                price: solToLamports(rentPrice),
+                min_duration: 0, // TODO: make input for this
+                max_duration: 1000000000, // TODO: make input for this
+                max_timestamp: 2000000000, // TODO: make input for this
+                create: true,
+                mint: this.state.focus.mint,
+            });
+            notify({
+                message: "Setting rent price...",
             });
         }
     }
@@ -682,7 +717,7 @@ export class Game extends React.Component {
             this.props.setChangePricesTrigger({
                 spaces: this.state.selecting.poses,
                 price: solToLamports(price),
-                delist: false,
+                create: true,
             });
             notify({
                 message: "Setting prices...",
@@ -702,7 +737,30 @@ export class Game extends React.Component {
                 x: this.state.focus.x,
                 y: this.state.focus.y,
                 price: 0,
-                delist: true,
+                create: false,
+                mint: this.state.focus.mint,
+            });
+            notify({
+                message: "Delisting...",
+            });
+        }
+    }
+    delistRent = () => {
+        let hasRentPrice = this.state.focus.hasRentPrice;
+        if (!hasRentPrice) {
+            notify({
+                message: "Warning:",
+                description: "Space is not listed for rent",
+            });
+        } else {
+            this.props.setChangeRentTrigger({
+                x: this.state.focus.x,
+                y: this.state.focus.y,
+                price: 0,
+                min_duration: 0,
+                max_duration: 0,
+                max_timestamp: 0,
+                create: false,
                 mint: this.state.focus.mint,
             });
             notify({
@@ -715,7 +773,7 @@ export class Game extends React.Component {
         this.props.setChangePricesTrigger({
             spaces: this.state.selecting.poses,
             price: 0,
-            delist: true,
+            create: false,
         });
         notify({
             message: "Delisting...",
@@ -759,14 +817,6 @@ export class Game extends React.Component {
             notify({
                 message: "Buying...",
             });
-            this.setState({
-                selecting: {
-                    ...this.state.selecting,
-                    purchasable: new Set(),
-                    purchasableInfo: [],
-                    totalPrice: 0,
-                },
-            });
             this.props.setPurchaseSpaceTrigger({
                 x: this.state.focus.x,
                 y: this.state.focus.y,
@@ -774,8 +824,30 @@ export class Game extends React.Component {
                 owner: this.state.focus.owner,
                 mint: this.state.focus.mint,
             });
+        }
+    }
 
-            
+    rentSpace = async () => {
+        let rentPrice = this.state.focus.rentPrice;
+        if (!rentPrice) {
+            notify({
+                message: "Warning:",
+                description: "Not for rent",
+            });
+        } else {
+            let x = this.state.focus.x;
+            let y = this.state.focus.y;
+            notify({
+                message: "Renting...",
+            });
+            this.props.setAcceptRentTrigger({
+                x: this.state.focus.x,
+                y: this.state.focus.y,
+                price: solToLamports(rentPrice),
+                rent_time: 500, // TODO: make a input for this
+                owner: this.state.focus.owner,
+                mint: this.state.focus.mint,
+            });
         }
     }
 
@@ -1289,6 +1361,15 @@ export class Game extends React.Component {
             },
         });
     }
+    handleChangeFocusRentPrice = (e) => {
+        // TODO: is there a problem with this if not owned?
+        this.setState({
+            focus: {
+                ...this.state.focus,
+                rentPrice: e.target.value,
+            },
+        });
+    }
     handleChangeSelectingPrice = (e) => {
         // TODO: is there a problem with this if not owned?
         this.setState({
@@ -1310,11 +1391,18 @@ export class Game extends React.Component {
                 owned: false,
                 hasPrice: false,
                 price: null,
-                swappable: false,
                 mint: null,
                 infoLoaded: false,
                 imgLoaded: false,
                 neighborhood_name: null,
+                hasRentPrice: false,
+                rentPrice: null,
+                minDuration: null,
+                maxDuration: null,
+                maxTimestamp: null,
+                renter: null,
+                rentEnd: null,
+                rentee: null,
             },
         });
     }
@@ -1383,13 +1471,11 @@ export class Game extends React.Component {
         let owned = false;
         let owner = null;
         let price = null;
-        let swappable = false;
         let mint = null;
         let hasPrice = false;
         if (space_metadata_data) {
             owner = space_metadata_data.owner; // (await this.props.server.getNFTOwner(connection, space_metadata_data.mint)).toBase58();
             mint = space_metadata_data.mint;
-            //swappable = space_metadata_data.swappable;
             if (space_metadata_data.has_price) {
                 price = lamportsToSol(space_metadata_data.price);
                 hasPrice = true;
@@ -1411,6 +1497,12 @@ export class Game extends React.Component {
         if (key in this.viewport.neighborhood_names) {
             neighborhood_name = this.viewport.neighborhood_names[key];
         }
+
+        let rentInfo = await this.props.server.getRentInfo(connection, x, y, owner);
+        if (rentInfo.rentPrice != null){
+            rentInfo.rentPrice = lamportsToSol(rentInfo.rentPrice);
+        }
+
         if (!this.state.focus.focus || this.state.focus.x !== x || this.state.focus.y !== y) { // sidebar changed
             return;
         }
@@ -1425,10 +1517,10 @@ export class Game extends React.Component {
                 owner: owner,
                 price: price,
                 hasPrice: hasPrice,
-                swappable: swappable,
                 mint: mint,
                 infoLoaded: true,
                 neighborhood_name: neighborhood_name,
+                ...rentInfo,
             },
             showNav: true,
         });
@@ -1795,6 +1887,10 @@ export class Game extends React.Component {
             changePrice={this.changePrice}
             delistSpace={this.delistSpace}
             handleFocusRefresh={this.handleFocusRefresh}
+            handleChangeFocusRentPrice={this.handleChangeFocusRentPrice}
+            changeRentPrice={this.changeRentPrice}
+            delistRent={this.delistRent}
+            rentSpace={this.rentSpace}
             scale={this.board.current ? this.board.current.scale : null}
             height={this.board.current ? this.board.current.height: null}
             />;
