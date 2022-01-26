@@ -830,7 +830,8 @@ export const Home = (props: HomeProps) => {
   }, [neighborhoods]);
 
   const border = 5;
-  const ratio = window.innerHeight * 0.7 / 1000;
+  const canvasSize = Math.min(window.innerHeight * 0.7, window.innerWidth * 0.4);
+  const ratio = canvasSize / 1000;
 
   return (
     //<div id="home" style={{display: "flex", flexDirection: "row", position: "absolute", top: "10%", bottom: 0, left: 0, right: 0, overflow: "auto"}}>
@@ -851,8 +852,8 @@ export const Home = (props: HomeProps) => {
       </FormControl>
         <Divider/>
       
-      <div style={{width: window.innerHeight * 0.7, height: window.innerHeight * 0.7, marginLeft: "20%", position: "relative"}}>
-        <canvas id="preview" width="1000px" height="1000px" style={{width: window.innerHeight * 0.7, height: window.innerHeight * 0.7}}/>
+      <div style={{width: canvasSize, height: canvasSize, marginLeft: "20%", position: "relative"}}>
+        <canvas id="preview" width="1000px" height="1000px" style={{width: canvasSize, height: canvasSize}}/>
         <div id="selector" style={{position: "absolute", top: 400 * ratio - border + "px", left: 400 * ratio - border + "px", width: 200 * ratio + 2 * border + "px", height: 200 * ratio + 2 * border + "px", border: border + "px dashed white"}}/>
         </div>
       </div>
@@ -861,7 +862,7 @@ export const Home = (props: HomeProps) => {
         <Divider/>
       
       {(!wallet || (neighborhoodX === undefined && neighborhoodY === undefined)) && (
-        <div style={{marginRight: "10%", marginTop: "30%"}}>
+        <div style={{marginRight: "10%", marginTop: "30%", marginLeft: "10%"}}>
           <p style={{textAlign: "center", fontSize: "25px"}}>
             One million Spaces are divided into a 5 x 5 grid of Neighborhoods.
             Each Neighborhood contains 200 x 200 (40,000) Spaces, and Neighborhoods will
