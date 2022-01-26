@@ -25,8 +25,23 @@ const Home: NextPage = () => {
                 <title>Extend</title>
                 <link rel="icon" href="/images/small_logo.svg" />
                 <link rel="apple-touch-icon" href="/images/small_logo.svg" />
-                <meta name="description" content="Extend your world with Spaces" />
                 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+                <meta name="description" content="Extend your world with Spaces"/>
+
+                <meta property="og:url" content="https://canvas.extend.xyz/"/>
+                <meta property="og:type" content="website"/>
+                <meta property="og:title" content="Extend - The Most Customizable NFT"/>
+                <meta property="og:description" content="Extend your world with Spaces"/>
+                <meta property="og:image" content="/images/logo_long.svg"/>
+
+                <meta name="twitter:card" content="summary_large_image"/>
+                <meta property="twitter:domain" content="canvas.extend.xyz"/>
+                <meta property="twitter:url" content="https://canvas.extend.xyz/"/>
+                <meta name="twitter:title" content="Extend - The Most Customizable NFT"/>
+                <meta name="twitter:description" content="Extend your world with Spaces"/>
+                <meta name="twitter:image" content="/images/logo_long.svg"/>
+
             </Head>
             <section className={`${styles.logoAndSocial}`}>
             <Row>
