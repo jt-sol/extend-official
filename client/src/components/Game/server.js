@@ -365,7 +365,7 @@ export class Server {
         }
     }
 
-    async getRentInfo(connection, x, y, owner) {
+    async getRentAccount(connection, x, y, owner) {
         const rent_account = await PublicKey.findProgramAddress([
                 BASE.toBuffer(),
                 Buffer.from(RENT_ACCOUNT_SEED),
@@ -387,12 +387,14 @@ export class Server {
             console.log(rentPrice);
 
 
-            let hasRentPrice = false;
-            if (owner.toBase58() === renter.toBase58()) {
-                hasRentPrice = true;
-            }
-            else{
-                rentPrice = 0;
+            let now = Date.now() / 1000;
+            console.log(now);
+            console.log(rentEnd);
+            console.log(maxTimestamp);
+            let hasRentPrice = true;
+            if (rentPrice == 0 || owner.toBase58() !== renter.toBase58() || (maxTimestamp > 0 && now > maxTimestamp) || now < rentEnd) {
+                hasRentPrice = false;
+                rentPrice = 0
             }
             console.log(hasRentPrice);
 
@@ -415,19 +417,18 @@ export class Server {
                 rentEnd,
                 rentee,
                 hasRentPrice,
-                //swappable: (!!account.data[42]),
             }
-        } else {return {
-            rentPrice: null,
-            minDuration: null,
-            maxDuration: null,
-            maxTimestamp: null,
-            renter: null,
-            rentEnd: null,
-            rentee: null,
-            hasRentPrice: false,
-            //swappable: (!!account.data[42]),
-        }
+        } else {
+            return {
+                rentPrice: null,
+                minDuration: null,
+                maxDuration: null,
+                maxTimestamp: null,
+                renter: null,
+                rentEnd: null,
+                rentee: null,
+                hasRentPrice: false,
+            }
         }
     }
 

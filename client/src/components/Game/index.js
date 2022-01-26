@@ -1498,9 +1498,12 @@ export class Game extends React.Component {
             neighborhood_name = this.viewport.neighborhood_names[key];
         }
 
-        let rentInfo = await this.props.server.getRentInfo(connection, x, y, owner);
-        if (rentInfo.rentPrice != null){
+        let rentInfo = await this.props.server.getRentAccount(connection, x, y, owner);
+        if (rentInfo.hasRentPrice){
             rentInfo.rentPrice = lamportsToSol(rentInfo.rentPrice);
+        }
+        else{
+            rentInfo.rentPrice = null;
         }
 
         if (!this.state.focus.focus || this.state.focus.x !== x || this.state.focus.y !== y) { // sidebar changed

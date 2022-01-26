@@ -519,7 +519,7 @@ export class FocusSidebar extends React.Component {
                                     }}
                                     disabled={!this.props.user}
                                     >
-                                    Buy Now
+                                    Rent Now
                                     </Button>
                                 </ListItem>
                                 </>
