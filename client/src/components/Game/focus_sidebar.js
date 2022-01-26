@@ -475,7 +475,7 @@ export class FocusSidebar extends React.Component {
                     <TabPanel value={this.state.value} index={3}>
                         {sidebarHeader}
 
-                        {/* purchase info */}
+                        {/* rent info */}
                         
                         {(!this.props.focus.infoLoaded || !this.props.focus.imgLoaded) ?
                             null
@@ -561,7 +561,7 @@ export class FocusSidebar extends React.Component {
                                     size="small"
                                     variant="contained"
                                     onClick={() => {
-                                        this.props.changeRentPrice();
+                                        this.props.changeRent();
                                     }}
                                     style={{
                                         width: "100%",

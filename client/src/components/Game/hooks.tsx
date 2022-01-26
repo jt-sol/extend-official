@@ -75,7 +75,7 @@ export function Screen(props) {
     const [newNeighborhoodTrigger, setNewNeighborhoodTrigger] = useState<any>({});
     const [newFrameTrigger, setNewFrameTrigger] = useState<any>({});
     const [changeRentTrigger, setChangeRentTrigger] = useState({});
-    const [setRentsTrigger, setSetRentsTrigger] = useState({});
+    const [changeRentsTrigger, setChangeRentsTrigger] = useState({});
     const [acceptRentTrigger, setAcceptRentTrigger] = useState({});
     const [acceptRentsTrigger, setAcceptRentsTrigger] = useState({});
     const [viewer, setViewer] = useState(0);
@@ -420,7 +420,7 @@ export function Screen(props) {
             const price = changePricesTrigger["price"];
             const create = changePricesTrigger["delist"];
             const spaces = changePricesTrigger["spaces"];
-            if ((price || !create) && wallet.publicKey) {
+            if ((price || !create) && wallet.publicKey && spaces) {
 
                 let changes: ChangeOfferArgs[] = [];
                 const spaceGrid = ownedSpaces;
@@ -453,7 +453,7 @@ export function Screen(props) {
     );
 
     useEffect(() => {
-        const asyncBuySpace = async() => {
+        const asyncPurchaseSpace = async() => {
             let price = purchaseSpaceTrigger["price"];
             if (price) {
                 if (wallet.publicKey) {
@@ -493,13 +493,13 @@ export function Screen(props) {
                 }
             }
         }
-        asyncBuySpace();
+        asyncPurchaseSpace();
     },
         [purchaseSpaceTrigger]
     );
 
     useEffect(() => {
-        const asyncBuySpaces = async() => {
+        const asyncPurchaseSpaces = async() => {
             if (purchaseSpacesTrigger["purchasableInfo"]) {
                 if (wallet.publicKey) {
                     let currentUser = wallet.publicKey;
@@ -545,7 +545,7 @@ export function Screen(props) {
                 }
             }
         }
-        asyncBuySpaces();
+        asyncPurchaseSpaces();
     },
         [purchaseSpacesTrigger]
     );    
@@ -918,14 +918,14 @@ export function Screen(props) {
 
     useEffect(() => {
         const asyncSetRents = async() => {
-            const price = setRentsTrigger["price"];
-            const create = setRentsTrigger["create"];
-            const spaces = setRentsTrigger["spaces"];
-            if ((price || !create) && wallet.publicKey) {
+            const price = changeRentsTrigger["price"];
+            const create = changeRentsTrigger["create"];
+            const spaces = changeRentsTrigger["spaces"];
+            if ((price || !create) && wallet.publicKey && spaces) {
 
-                const min_duration = setRentsTrigger["min_duration"];
-                const max_duration = setRentsTrigger["max_duration"];
-                const max_timestamp = setRentsTrigger["max_timestamp"];
+                const min_duration = changeRentsTrigger["min_duration"];
+                const max_duration = changeRentsTrigger["max_duration"];
+                const max_timestamp = changeRentsTrigger["max_timestamp"];
                 let changes: SetRentArgs[] = [];
                 const spaceGrid = ownedSpaces;
                 for (let space of spaces){
@@ -940,9 +940,9 @@ export function Screen(props) {
                 }
                 try{
                     let ixs = await setRentInstructions(wallet, BASE, changes);
-                    let name = "Set space prices"
+                    let name = "Set rent"
                     if (!create) {
-                        name = "Delist"
+                        name = "Delist rent"
                     }
                     sendInstructionsGreedyBatch(connection, wallet, ixs, name);
                 }
@@ -953,7 +953,7 @@ export function Screen(props) {
         }
         asyncSetRents();
     },
-        [setRentsTrigger]
+        [changeRentsTrigger]
     );
 
     useEffect(() => {
@@ -1008,6 +1008,7 @@ export function Screen(props) {
             if (acceptRentsTrigger["rentableInfo"]) {
                 if (wallet.publicKey) {
                     let currentUser = wallet.publicKey;
+                    const rent_time = acceptRentTrigger["rent_time"];
                     let changes = acceptRentsTrigger["rentableInfo"].map(x => new AcceptRentArgs(x));
 
                     try {
@@ -1052,7 +1053,7 @@ export function Screen(props) {
         }
         asyncAcceptRents();
     },
-        [purchaseSpacesTrigger]
+        [acceptRentsTrigger]
     );    
 
     return (
@@ -1077,7 +1078,7 @@ export function Screen(props) {
             setNewNeighborhoodTrigger={setNewNeighborhoodTrigger}
             setNewFrameTrigger={setNewFrameTrigger}
             setChangeRentTrigger={setChangeRentTrigger}
-            setSetRentsTrigger={setSetRentsTrigger}
+            setChangeRentsTrigger={setChangeRentsTrigger}
             setAcceptRentTrigger={setAcceptRentTrigger}
             setAcceptRentsTrigger={setAcceptRentsTrigger}
             locator={props.locator}

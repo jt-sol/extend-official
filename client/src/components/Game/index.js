@@ -114,7 +114,12 @@ export class Game extends React.Component {
                 purchasableInfo: new Array(),
                 purchasable: new Set(),
                 totalPrice: NaN,
-                floorPrice: NaN,
+                rentPrice: null,
+                loadingRentStatus: 0,
+                rentableInfoAll: new Array(),
+                rentableInfo: new Array(),
+                rentable: new Set(),
+                totalRentPrice: NaN,
                 floorM: 1,
                 floorN: 1,
             },
@@ -650,7 +655,7 @@ export class Game extends React.Component {
 
     changePrice = () => {
         let price = Number(this.state.focus.price);
-        if (isNaN(price)) {
+        if (price != 0 && !price) {
             notify({
                 message: "Warning:",
                 description: `Could not parse price ${this.state.focus.price}`,
@@ -673,37 +678,10 @@ export class Game extends React.Component {
             });
         }
     }
-    changeRentPrice = () => {
-        let rentPrice = Number(this.state.focus.rentPrice);
-        if (isNaN(rentPrice)) {
-            notify({
-                message: "Warning:",
-                description: `Could not parse rent price ${this.state.focus.rentPrice}`,
-            });
-        } else if (rentPrice <= 0) {
-            notify({
-                message: "Warning:",
-                description: "Can only set to positive amount of SOL",
-            });
-        } else {
-            this.props.setChangeRentTrigger({
-                x: this.state.focus.x,
-                y: this.state.focus.y,
-                price: solToLamports(rentPrice),
-                min_duration: 0, // TODO: make input for this
-                max_duration: 1000000000, // TODO: make input for this
-                max_timestamp: 2000000000, // TODO: make input for this
-                create: true,
-                mint: this.state.focus.mint,
-            });
-            notify({
-                message: "Setting rent price...",
-            });
-        }
-    }
+
     changePrices = () => {
-        let price = this.state.selecting.price; // TODO: fill this var with user input
-        if (!price) {
+        let price = this.state.selecting.price;
+        if (price != 0 && !price) {
             notify({
                 message: "Warning:",
                 description: "Price is undefined",
@@ -745,6 +723,63 @@ export class Game extends React.Component {
             });
         }
     }
+
+    changeRent = () => {
+        let rentPrice = Number(this.state.focus.rentPrice);
+        if (rentPrice != 0 && !rentPrice) {
+            notify({
+                message: "Warning:",
+                description: `Could not parse rent price ${this.state.focus.rentPrice}`,
+            });
+        } else if (rentPrice <= 0) {
+            notify({
+                message: "Warning:",
+                description: "Can only set to positive amount of SOL",
+            });
+        } else {
+            this.props.setChangeRentTrigger({
+                x: this.state.focus.x,
+                y: this.state.focus.y,
+                price: solToLamports(rentPrice),
+                min_duration: 300, // TODO: make input for this
+                max_duration: 3600, // TODO: make input for this
+                max_timestamp: 2000000000, // TODO: make input for this
+                create: true,
+                mint: this.state.focus.mint,
+            });
+            notify({
+                message: "Setting rent...",
+            });
+        }
+    }
+
+    changeRents = () => {
+        let rentPrice = this.state.selecting.rentPrice;
+        if (rentPrice != 0 && !rentPrice) {
+            notify({
+                message: "Warning:",
+                description: "Price is undefined",
+            });
+        } else if (rentPrice <= 0) {
+            notify({
+                message: "Warning:",
+                description: "Can only set to positive amount of SOL",
+            });
+        } else {
+            this.props.setChangeRentsTrigger({
+                spaces: this.state.selecting.poses,
+                price: solToLamports(rentPrice),
+                min_duration: 300, // TODO: make input for this
+                max_duration: 3600, // TODO: make input for this
+                max_timestamp: 2000000000, // TODO: make input for this
+                create: true,
+            });
+            notify({
+                message: "Setting rent...",
+            });
+        }
+    }
+
     delistRent = () => {
         let hasRentPrice = this.state.focus.hasRentPrice;
         if (!hasRentPrice) {
@@ -764,7 +799,7 @@ export class Game extends React.Component {
                 mint: this.state.focus.mint,
             });
             notify({
-                message: "Delisting...",
+                message: "Delisting rent...",
             });
         }
     }
@@ -780,28 +815,15 @@ export class Game extends React.Component {
         });
     }
 
-    addNewFrame = async () => {
-        const n_x = this.state.neighborhood.n_x;
-        const n_y = this.state.neighborhood.n_y;
-        this.props.setNewFrameTrigger({ n_x: n_x, n_y: n_y });
-        notify({
-            message: "Adding new frame",
+    delistRents = () => {
+        this.props.setChangeRentsTrigger({
+            spaces: this.state.selecting.poses,
+            price: 0,
+            create: false,
         });
-    }
-
-    expand = (neighborhood) => {
-        this.props.setNewNeighborhoodTrigger(neighborhood);
         notify({
-            message: "Initializing new Neighborhood...",
+            message: "Delisting rents...",
         });
-
-        // const n_x = Math.floor(this.focus.x / NEIGHBORHOOD_SIZE);
-        // const n_y = Math.floor(this.focus.y / NEIGHBORHOOD_SIZE);
-        // requestAnimationFrame(() => {
-        //     this.drawCanvasCache({x: n_x * NEIGHBORHOOD_SIZE, y: n_y * NEIGHBORHOOD_SIZE, width: NEIGHBORHOOD_SIZE, height: NEIGHBORHOOD_SIZE});
-        //     this.drawNTracker();
-        //     this.drawSelected();
-        // })
     }
 
     purchaseSpace = async () => {
@@ -866,7 +888,25 @@ export class Game extends React.Component {
         });
     }
 
-    loadPrice = async () => {
+    rentSpaces = () => {
+        this.props.setAcceptRentsTrigger({
+            rentableInfo: this.state.selecting.rentableInfo,
+            rent_time: 500, // TODO: make a input for this
+        });
+        notify({
+            message: "Renting...",
+        });
+        this.setState({
+            selecting: {
+                ...this.state.selecting,
+                rentable: new Set(),
+                rentableInfo: [],
+                totalPrice: 0,
+            },
+        });
+    }
+
+    loadPurchasableInfo = async () => {
         this.setState({
             selecting: {
                 ...this.state.selecting,
@@ -896,10 +936,40 @@ export class Game extends React.Component {
                 purchasableInfoAll,
             },
         });
-        //this.handleShowAllPurchasable();
     }
 
-    handleShowAllPurchasable = async () => {
+    loadRentableInfo = async () => {
+        this.setState({
+            selecting: {
+                ...this.state.selecting,
+                loadingRentStatus: 1,
+                rentableInfoAll: [],
+                rentableInfo: [],
+                rentable: new Set(),
+                totalRentPrice: NaN,
+            },
+        });
+        
+        let rentableInfoAll;
+        loading(null, "loading rent info", null);
+        try { // run props.database query
+            rentableInfoAll = await this.props.database.getRentableInfo(this.props.user, this.state.selecting.poses);
+        } catch(e) { // if error getting from db, run RPC calls
+            console.error(e);
+            console.log("RPC call for getting rentable info");
+            rentableInfoAll = await this.props.server.getRentableInfo(this.props.connection, this.props.user, this.state.selecting.poses);
+        }
+        loading(null, "loading rent info", "success");
+        this.setState({
+            selecting: {
+                ...this.state.selecting,
+                loadingRentStatus: 2,
+                rentableInfoAll,
+            },
+        });
+    }
+
+    handleTargetAll = async () => {
         this.setState({
             selecting: {
                 ...this.state.selecting,
@@ -910,7 +980,7 @@ export class Game extends React.Component {
         let purchasable = new Set();
         let purchasableInfo = [];
         for (const info of this.state.selecting.purchasableInfoAll) {
-            const { x, y, mint, price, seller } = info;
+            const { x, y, mint, price } = info;
             totalPrice += price;
             purchasable.add(JSON.stringify({ x, y }));
             purchasableInfo.push(info);
@@ -932,20 +1002,41 @@ export class Game extends React.Component {
             },
         });
     }
-
-    handleShowFloor = async () => {
-        // const checked = e.target.checked;
-
-        // this.setState({
-        //     floor: checked,
-        // });
+    handleTargetRentAll = async () => {
         this.setState({
             selecting: {
                 ...this.state.selecting,
                 targetStatus: 1,
             },
         });
+        let totalPrice = 0;
+        let rentable = new Set();
+        let rentableInfo = [];
+        for (const info of this.state.selecting.rentableInfoAll) {
+            const { x, y, mint, price } = info;
+            totalPrice += price;
+            rentable.add(JSON.stringify({ x, y }));
+            rentableInfo.push(info);
+        }
 
+        if (rentable.size === 0) {
+            totalPrice = NaN;
+            notify({
+                message: "No Spaces available to rent",
+            });
+        }
+        this.setState({
+            selecting: {
+                ...this.state.selecting,
+                rentable,
+                rentableInfo,
+                totalRentPrice: lamportsToSol(totalPrice),
+                targetStatus: 2,
+            },
+        });
+    }
+
+    getFloor = (infoAll, n, m) => {
         const poses = [...this.state.selecting.poses];
         const topLeft = JSON.parse(poses[0]);
         const bottomRight = JSON.parse(poses[poses.length - 1]);
@@ -958,30 +1049,17 @@ export class Game extends React.Component {
         let infos = Array.from({ length: r + 1 }, () =>
             new Array(c + 1).fill(null)
         );
-        let purchasableInfo = this.state.selecting.purchasableInfoAll;
+        let purchasableInfo = infoAll;
 
-
-        // check if user input large or zero/negative dimensions
-        const m = this.state.selecting.floorM;
-        const n = this.state.selecting.floorN;
         if (m > r || n > c || m <= 0 || n <= 0) {
             let purchasable = new Set();
             let floor = NaN;
-            this.setState({
-                selecting: {
-                    ...this.state.selecting,
-                    targetStatus: 2,
-                    purchasableInfo,
-                    purchasable,
-                    totalPrice: lamportsToSol(floor),
-                },
-            });
-            return;
+            return {purchasable, purchasableInfo, floor};
         }
 
         for (let info of purchasableInfo) {
             // fill arrays
-            const { x, y, mint, price, seller } = info;
+            const { x, y, mint, price } = info;
             listed[x - offsetX + 1][y - offsetY + 1] = 1;
             prices[x - offsetX + 1][y - offsetY + 1] = price;
             infos[x - offsetX + 1][y - offsetY + 1] = info;
@@ -1037,13 +1115,60 @@ export class Game extends React.Component {
             }
         }
         purchasableInfo = purchasableInfo.filter(({ x, y }) => purchasable.has(JSON.stringify({ x, y })));
+        return {spaces: purchasable, info: purchasableInfo, floor};
+    }
+
+    resetTargets = () => {
+        this.setState({
+            selecting: {
+                ...this.state.selecting,
+                purchasable: new Set(),
+                purchasableInfo: [],
+                totalPrice: null,
+                rentable: new Set(),
+                rentableInfo: [],
+                totalRentPrice: null,
+            },
+        });
+    }
+
+
+    handleTargetFloor = async () => {
+        this.setState({
+            selecting: {
+                ...this.state.selecting,
+                targetStatus: 1,
+            },
+        });
+        let {spaces, info, floor} = this.getFloor(this.state.selecting.purchasableInfoAll, this.state.selecting.floorN, this.state.selecting.floorM);
+
         this.setState({
             selecting: {
                 ...this.state.selecting,
                 targetStatus: 2,
-                purchasableInfo,
-                purchasable,
+                purchasable: spaces,
+                purchasableInfo: info,
                 totalPrice: lamportsToSol(floor),
+            },
+        });
+    }
+
+    handleTargetRentFloor = async () => {
+        this.setState({
+            selecting: {
+                ...this.state.selecting,
+                targetRentStatus: 1,
+            },
+        });
+        let {spaces, info, floor} = this.getFloor(this.state.selecting.rentableInfoAll, this.state.selecting.floorN, this.state.selecting.floorM);
+
+        this.setState({
+            selecting: {
+                ...this.state.selecting,
+                targetRentStatus: 2,
+                rentable: spaces,
+                rentableInfo: info,
+                totalRentPrice: lamportsToSol(floor),
             },
         });
     }
@@ -1121,6 +1246,30 @@ export class Game extends React.Component {
         loading(null, "Getting your listings", "success");
     }
 
+    addNewFrame = async () => {
+        const n_x = this.state.neighborhood.n_x;
+        const n_y = this.state.neighborhood.n_y;
+        this.props.setNewFrameTrigger({ n_x: n_x, n_y: n_y });
+        notify({
+            message: "Adding new frame",
+        });
+    }
+
+    expand = (neighborhood) => {
+        this.props.setNewNeighborhoodTrigger(neighborhood);
+        notify({
+            message: "Initializing new Neighborhood...",
+        });
+
+        // const n_x = Math.floor(this.focus.x / NEIGHBORHOOD_SIZE);
+        // const n_y = Math.floor(this.focus.y / NEIGHBORHOOD_SIZE);
+        // requestAnimationFrame(() => {
+        //     this.drawCanvasCache({x: n_x * NEIGHBORHOOD_SIZE, y: n_y * NEIGHBORHOOD_SIZE, width: NEIGHBORHOOD_SIZE, height: NEIGHBORHOOD_SIZE});
+        //     this.drawNTracker();
+        //     this.drawSelected();
+        // })
+    }
+
     register = () => {
         this.setState({
             mySpacesMenuOpen: false,
@@ -1141,7 +1290,7 @@ export class Game extends React.Component {
                 // coordinates case
                 try {
                     let coordinates = text.split(",");
-                    coordinates[0] = coordinates[0].replace("(", ""); // remove parantheses if there are any
+                    coordinates[0] = coordinates[0].replace("(", ""); // remove parentheses if there are any
                     coordinates[1] = coordinates[1].replace(")", "");
                     const x = parseInt(coordinates[0]);
                     const y = parseInt(coordinates[1]);
@@ -1351,7 +1500,6 @@ export class Game extends React.Component {
     }
 
     handleChangeFocusPrice = (e) => {
-        // TODO: is there a problem with this if not owned?
         this.setState({
             focus: {
                 ...this.state.focus,
@@ -1360,7 +1508,6 @@ export class Game extends React.Component {
         });
     }
     handleChangeFocusRentPrice = (e) => {
-        // TODO: is there a problem with this if not owned?
         this.setState({
             focus: {
                 ...this.state.focus,
@@ -1369,11 +1516,18 @@ export class Game extends React.Component {
         });
     }
     handleChangeSelectingPrice = (e) => {
-        // TODO: is there a problem with this if not owned?
         this.setState({
             selecting: {
                 ...this.state.selecting,
                 price: e.target.value,
+            },
+        });
+    }
+    handleChangeSelectingRentPrice = (e) => {
+        this.setState({
+            selecting: {
+                ...this.state.selecting,
+                rentPrice: e.target.value,
             },
         });
     }
@@ -1426,12 +1580,16 @@ export class Game extends React.Component {
                 color: "#000000",
                 price: null,
                 loadingPricesStatus: 0,
-                loadingFloorSTatus: 0,
                 purchasableInfoAll: new Array(),
                 purchasableInfo: new Array(),
                 purchasable: new Set(),
                 totalPrice: NaN,
-                floorPrice: NaN,
+                rentPrice: null,
+                loadingRentStatus: 0,
+                rentableInfoAll: new Array(),
+                rentableInfo: new Array(),
+                rentable: new Set(),
+                totalRentPrice: NaN,
                 floorM: 1,
                 floorN: 1,
             },
@@ -1585,7 +1743,6 @@ export class Game extends React.Component {
                     purchasableInfo: new Array(),
                     purchasable: new Set(),
                     totalPrice: NaN,
-                    floorPrice: NaN,
                     floorM: 1,
                     floorN: 1,
                 },
@@ -1889,7 +2046,7 @@ export class Game extends React.Component {
             delistSpace={this.delistSpace}
             handleFocusRefresh={this.handleFocusRefresh}
             handleChangeFocusRentPrice={this.handleChangeFocusRentPrice}
-            changeRentPrice={this.changeRentPrice}
+            changeRent={this.changeRent}
             delistRent={this.delistRent}
             rentSpace={this.rentSpace}
             scale={this.board.current ? this.board.current.scale : null}
@@ -1911,13 +2068,21 @@ export class Game extends React.Component {
                 handleChangeSelectingPrice={this.handleChangeSelectingPrice}
                 changePrices={this.changePrices}
                 delistSpaces={this.delistSpaces}
-                loadPrice={this.loadPrice}
-                handleShowAllPurchasable={this.handleShowAllPurchasable}
-                handleChangeFloorM={this.handleChangeFloorM}
-                handleChangeFloorN={this.handleChangeFloorN}
-                handleShowFloor={this.handleShowFloor}
+                loadPurchasableInfo={this.loadPurchasableInfo}
+                resetTargets={this.resetTargets}
+                handleTargetAll={this.handleTargetAll}
+                handleTargetFloor={this.handleTargetFloor}
                 purchaseSpaces={this.purchaseSpaces}
                 handleSelectingRefresh={this.handleSelectingRefresh}
+                handleChangeSelectingRentPrice={this.handleChangeSelectingRentPrice}
+                changeRents={this.changeRents}
+                delistRents={this.delistRents}
+                loadRentableInfo={this.loadRentableInfo}
+                handleTargetRentAll={this.handleTargetRentAll}
+                handleTargetRentFloor={this.handleTargetRentFloor}
+                rentSpaces={this.rentSpaces}
+                handleChangeFloorM={this.handleChangeFloorM}
+                handleChangeFloorN={this.handleChangeFloorN}
                 scale={this.board.current ? this.board.current.scale : null}
                 height={this.board.current ? this.board.current.height : null}
                 canvasSize = {Math.min(SIDE_NAV_WIDTH, window.innerWidth - 48)}
