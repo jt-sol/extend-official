@@ -896,7 +896,7 @@ export function Screen(props) {
     );
 
     useEffect(() => {
-        const asyncSetRent = async() => {
+        const asyncChangeRent = async() => {
             const price = changeRentTrigger["price"];
             const create = changeRentTrigger["create"];
             if ((price || !create) && wallet.publicKey) {
@@ -921,13 +921,13 @@ export function Screen(props) {
                 }
             }
         }
-        asyncSetRent();
+        asyncChangeRent();
     },
         [changeRentTrigger]
     );
 
     useEffect(() => {
-        const asyncSetRents = async() => {
+        const asyncChangeRents = async() => {
             const price = changeRentsTrigger["price"];
             const create = changeRentsTrigger["create"];
             const spaces = changeRentsTrigger["spaces"];
@@ -961,7 +961,7 @@ export function Screen(props) {
                 }
             }
         }
-        asyncSetRents();
+        asyncChangeRents();
     },
         [changeRentsTrigger]
     );
@@ -975,11 +975,11 @@ export function Screen(props) {
                     const x = acceptRentTrigger["x"];
                     const y = acceptRentTrigger["y"];
                     const rent_time = acceptRentTrigger["rent_time"];
-                    const seller = acceptRentTrigger["owner"];
+                    const renter = acceptRentTrigger["owner"];
                     const position = JSON.stringify({x, y});
                     const mint = acceptRentTrigger["mint"];
                     try {
-                        let change = new AcceptRentArgs({x, y, mint, price, rent_time, seller});
+                        let change = new AcceptRentArgs({x, y, mint, price, rent_time, renter});
                         let ix = await acceptRentInstruction(server, connection, wallet, BASE, change);
                         const response = await sendTransaction(connection, wallet, ix, "Rent space");
                         // if (response) {
@@ -1018,8 +1018,8 @@ export function Screen(props) {
             if (acceptRentsTrigger["rentableInfo"]) {
                 if (wallet.publicKey) {
                     let currentUser = wallet.publicKey;
-                    const rent_time = acceptRentTrigger["rent_time"];
-                    let changes = acceptRentsTrigger["rentableInfo"].map(x => new AcceptRentArgs(x));
+                    const rent_time = acceptRentsTrigger["rent_time"];
+                    let changes = acceptRentsTrigger["rentableInfo"].map(x => new AcceptRentArgs({...x, rent_time}));
 
                     try {
                         let ixs = await acceptRentInstructions(server, connection, wallet, BASE, changes);

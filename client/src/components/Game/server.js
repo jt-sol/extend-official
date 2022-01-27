@@ -312,6 +312,11 @@ export class Server {
         return result;
     }
 
+    /*
+    parses space metadata account, along with a hasPrice field that 
+    describes if the space is listed.
+    owner and mint public keys are null if the space has not been registered
+    */
     async getSpaceMetadata(connection, p_x, p_y) {
         const spaceMetadata = await PublicKey.findProgramAddress([
                 BASE.toBuffer(),
@@ -336,36 +341,33 @@ export class Server {
                 SPACE_PROGRAM_ID
             );
 
-            let has_price = false;
+            let hasPrice = false;
             let price = 0;
             if (delegate.toBase58() === sell_del[0].toBase58()) {
-                has_price = true;
+                hasPrice = true;
                 price = this.bytesToNumber(account.data.slice(33, 33+8));
             }
 
-            // const metadata = (await PublicKey.findProgramAddress([
-            //     Buffer.from("metadata"),
-            //     METADATA_PROGRAM_ID.toBuffer(),
-            //     mint.toBytes()
-            // ], METADATA_PROGRAM_ID))[0];
-
-            // const metadataInfo = await connection.getAccountInfo(metadata);
-            // const meta = decodeMetadata(metadataInfo.data);
-            // console.log(meta.data);
-
             return {
                 mint: mint,
-                has_price: has_price,
+                hasPrice: hasPrice,
                 price: price,
                 owner: owner,
-                //swappable: (!!account.data[42]),
             }
         } else {
-            return null;
+            return {
+                mint: null,
+                hasPrice: false,
+                price: 0,
+                owner: null,
+            };
         }
     }
-
-    // gets rent account data, takes in current ower of space
+    
+    /*
+    Parses rent account data, given x, y, and owner, computes additional
+    field hasRentPrice that describes whether the space is listed for rent
+    */
     async getRentAccount(connection, x, y, owner) {
         const rent_account = await PublicKey.findProgramAddress([
                 BASE.toBuffer(),
@@ -377,7 +379,7 @@ export class Server {
         );
         //console.log(spaceMetadata[0].toBase58());
         const account = await connection.getAccountInfo(rent_account[0]);
-        if (account) {
+        if (owner && account) {
             let rentPrice = this.bytesToNumber(account.data.slice(1, 1 + 8));
             let minDuration = this.bytesToNumber(account.data.slice(9, 9 + 8));
             let maxDuration = this.bytesToNumber(account.data.slice(17, 17 + 8));
@@ -389,21 +391,10 @@ export class Server {
 
             let now = Date.now() / 1000;
             let hasRentPrice = true;
-            if (rentPrice == 0 || owner.toBase58() !== renter.toBase58() || (maxTimestamp > 0 && now > maxTimestamp) || now < rentEnd) {
+            if (rentPrice == 0 || (owner.toBase58() !== renter.toBase58()) || (maxTimestamp > 0 && now > maxTimestamp) || now < rentEnd) {
                 hasRentPrice = false;
                 rentPrice = 0
             }
-            console.log(hasRentPrice);
-
-            // const metadata = (await PublicKey.findProgramAddress([
-            //     Buffer.from("metadata"),
-            //     METADATA_PROGRAM_ID.toBuffer(),
-            //     mint.toBytes()
-            // ], METADATA_PROGRAM_ID))[0];
-
-            // const metadataInfo = await connection.getAccountInfo(metadata);
-            // const meta = decodeMetadata(metadataInfo.data);
-            // console.log(meta.data);
 
             return {
                 rentPrice,
@@ -429,6 +420,16 @@ export class Server {
         }
     }
 
+    async getSpaceInfoWithRent(connection, x, y){
+        let info = await this.getSpaceMetadata(connection, x, y);
+        let {mint, hasPrice, price, owner} = info;
+        let rentInfo = await this.getRentAccount(connection, x, y, owner);
+        return{
+            ...info,
+            ...rentInfo,
+        }
+
+    }
 
     async getSpaceInfos(connection, poses_arr){
         try {
@@ -537,7 +538,7 @@ export class Server {
 
     /*
     get rentable info, excluding user. Set user to null to get all info.
-    Return a lists, each element is an object {x, y, mint, ..(rent account info)}}
+    Return a lists, each element is an object {x, y, mint, price, minDuration, maxDuration, maxTimestamp, renter}
     */
     async getRentableInfo(connection, user, poses) {
         let poses_arr = Array.from(poses);
@@ -578,7 +579,7 @@ export class Server {
                 let hasRentPrice = true;
                 if (rentPrice == 0 || owner.toBase58() !== renter.toBase58() || (maxTimestamp > 0 && now > maxTimestamp) || now < rentEnd) {
                     hasRentPrice = false;
-                    rentPrice = 0
+                    rentPrice = 0;
                 }
 
                 if (info.owner.toBase58() == user || !hasRentPrice){
@@ -592,10 +593,7 @@ export class Server {
                     minDuration,
                     maxDuration,
                     maxTimestamp,
-                    seller: renter,
-                    rentEnd,
-                    rentee,
-                    hasRentPrice,
+                    renter,
                 })
             }
         }

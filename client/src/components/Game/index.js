@@ -889,6 +889,7 @@ export class Game extends React.Component {
     }
 
     rentSpaces = () => {
+        console.log(this.state.selecting.rentableInfo);
         this.props.setAcceptRentsTrigger({
             rentableInfo: this.state.selecting.rentableInfo,
             rent_time: 500, // TODO: make a input for this
@@ -959,6 +960,7 @@ export class Game extends React.Component {
             console.log("RPC call for getting rentable info");
             rentableInfoAll = await this.props.server.getRentableInfo(this.props.connection, this.props.user, this.state.selecting.poses);
         }
+        console.log(rentableInfoAll);
         loading(null, "loading rent info", "success");
         this.setState({
             selecting: {
@@ -1619,33 +1621,34 @@ export class Game extends React.Component {
         //   x,
         //   y
         // );
-        let space_metadata_data;
+        let info;
         try { // run props.database query
-            space_metadata_data = await this.props.database.getSpaceMetadata(x, y);
+            info = await this.props.database.getSpaceInfoWithRent(x, y);
+            console.log(info);
         } catch(e) { // if fails, run RPC call
-            console.log("RPC call for Space metadata")
-            space_metadata_data = await this.props.server.getSpaceMetadata(connection, x, y);
+            console.error(e);
+            console.log("RPC call for Space metadata");
+            info = await this.props.server.getSpaceInfoWithRent(connection, x, y);
         }
-        let owned = false;
-        let owner = null;
-        let price = null;
-        let mint = null;
-        let hasPrice = false;
-        if (space_metadata_data) {
-            owner = space_metadata_data.owner; // (await this.props.server.getNFTOwner(connection, space_metadata_data.mint)).toBase58();
-            mint = space_metadata_data.mint;
-            if (space_metadata_data.has_price) {
-                price = lamportsToSol(space_metadata_data.price);
-                hasPrice = true;
-            } else {
-                price = null;
-                hasPrice = false;
-            }
-            owned =
-                (this.props.ownedSpaces &&
-                    this.props.ownedSpaces.has(JSON.stringify({ x, y }))) ||
-                (this.props.user && this.props.user === owner);
+
+        if (info.hasPrice) {
+            info.price = lamportsToSol(info.price);
+        } else {
+            info.price = null;
         }
+        let owned =
+            (this.props.ownedSpaces &&
+                this.props.ownedSpaces.has(JSON.stringify({ x, y }))) ||
+            (this.props.user && this.props.user === info.owner);
+        
+
+        if (info.hasRentPrice){
+            info.rentPrice = lamportsToSol(info.rentPrice);
+        }
+        else{
+            info.rentPrice = null;
+        }
+
         const n_y = Math.floor(y / NEIGHBORHOOD_SIZE);
         const n_x = Math.floor(x / NEIGHBORHOOD_SIZE);
         let p_y = ((y % NEIGHBORHOOD_SIZE) + NEIGHBORHOOD_SIZE) % NEIGHBORHOOD_SIZE;
@@ -1656,17 +1659,13 @@ export class Game extends React.Component {
             neighborhood_name = this.viewport.neighborhood_names[key];
         }
 
-        let rentInfo = await this.props.server.getRentAccount(connection, x, y, owner);
-        if (rentInfo.hasRentPrice){
-            rentInfo.rentPrice = lamportsToSol(rentInfo.rentPrice);
-        }
-        else{
-            rentInfo.rentPrice = null;
-        }
+        console.log(info);
 
         if (!this.state.focus.focus || this.state.focus.x !== x || this.state.focus.y !== y) { // sidebar changed
             return;
         }
+
+        
         this.setState({
             focus: {
                 ...this.state.focus,
@@ -1675,13 +1674,9 @@ export class Game extends React.Component {
                         ? this.viewport.neighborhood_colors[key][p_y][p_x]
                         : "#000000",
                 owned: owned,
-                owner: owner,
-                price: price,
-                hasPrice: hasPrice,
-                mint: mint,
                 infoLoaded: true,
                 neighborhood_name: neighborhood_name,
-                ...rentInfo,
+                ...info,
             },
             showNav: true,
         });
@@ -1849,7 +1844,7 @@ export class Game extends React.Component {
         let owners = {[key]: owner};
         let mints = {[key]: mint};
         try{
-            await this.props.database.update(owners, mints);
+            await this.props.database.updateSpaceInfo(owners, mints);
         } catch (e){
             console.error(e);
         }
@@ -1884,8 +1879,7 @@ export class Game extends React.Component {
         loading(null, "refreshing", null);
         let error = false;
         try{
-            console.log("props.database update");
-            await this.props.database.update(owners, mints);
+            await this.props.database.updateSpaceInfo(owners, mints);
         }
         catch (e){
             console.error(e);

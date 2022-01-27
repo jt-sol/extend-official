@@ -48,7 +48,7 @@ export const SPACE_PROGRAM_ID = new PublicKey(
   "XSPCZghPXkWTWpvrfQ34Szpx3rwmUjsxebRFf5ckbMD"
 );
 export const RENT_PROGRAM_ID = new PublicKey(
-  "CCHBQjNnU4kg64mHYrjHE3qFno3j4x1kkoAvCXaLVJkb"
+  "XRNTtrxNf3Y2pAyi2bKkngYpuRxRouTkTQ1bNro3KGx"
 );
 export const METADATA_PROGRAM_ID = new PublicKey(
   "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"

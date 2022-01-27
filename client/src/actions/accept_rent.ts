@@ -48,7 +48,7 @@ export class AcceptRentArgs{
   mint: PublicKey;
   price: number;
   rent_time: number;
-  seller: PublicKey;
+  renter: PublicKey;
 
   constructor(args: {
     x: number;
@@ -56,14 +56,14 @@ export class AcceptRentArgs{
     mint: PublicKey;
     price: number;
     rent_time: number;
-    seller: PublicKey;
+    renter: PublicKey;
   }) {
     this.x = args.x;
     this.y = args.y;
     this.mint = args.mint;
     this.price = args.price;
     this.rent_time = args.rent_time;
-    this.seller = args.seller;
+    this.renter = args.renter;
   }
 }
 
@@ -75,7 +75,8 @@ export const acceptRentInstruction = async (
   change: AcceptRentArgs,
 ) => {
 
-  const {x, y, mint, price, rent_time, seller} = change;
+  const {x, y, mint, price, rent_time, renter} = change;
+  console.log(change);
 
   const space_x = twoscomplement_i2u(x);
   const space_y = twoscomplement_i2u(y);
@@ -101,11 +102,11 @@ export const acceptRentInstruction = async (
       RENT_PROGRAM_ID
     );
 
-  const seller_space_ATA = await Token.getAssociatedTokenAddress(
+  const renter_space_ATA = await Token.getAssociatedTokenAddress(
     ASSOCIATED_TOKEN_PROGRAM_ID,
     TOKEN_PROGRAM_ID,
     mint,
-    seller,
+    renter,
     false,
   );
 
@@ -138,12 +139,12 @@ export const acceptRentInstruction = async (
       isWritable: true,
     },
     {
-      pubkey: seller,
+      pubkey: renter,
       isSigner: false,
       isWritable: true,
     },
     {
-      pubkey: seller_space_ATA,
+      pubkey: renter_space_ATA,
       isSigner: false,
       isWritable: true,
     },
