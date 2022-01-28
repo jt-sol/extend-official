@@ -515,6 +515,7 @@ export class Server {
     /*
     get purchasable info, excluding user. Set user to null to get all info.
     Return a list, each element is an object {x, y, mint, price, seller}
+    Each of these objects can be passed into the constructor of AcceptOfferArgs if the user buys the space.
     */
     async getPurchasableInfo(connection, user, poses) {
         let infos = await this.getSpaceInfos(connection, Array.from(poses));
@@ -538,7 +539,8 @@ export class Server {
 
     /*
     get rentable info, excluding user. Set user to null to get all info.
-    Return a lists, each element is an object {x, y, mint, price, minDuration, maxDuration, maxTimestamp, renter}
+    Return a lists, each element is an object {x, y, mint, price, minDuration, maxDuration, maxTimestamp, renter}.
+    Each of these objects can be passed into the constructor of AcceptRentArgs if the user rents the space.
     */
     async getRentableInfo(connection, user, poses) {
         let poses_arr = Array.from(poses);
