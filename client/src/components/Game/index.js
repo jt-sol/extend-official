@@ -960,7 +960,6 @@ export class Game extends React.Component {
             console.log("RPC call for getting rentable info");
             rentableInfoAll = await this.props.server.getRentableInfo(this.props.connection, this.props.user, this.state.selecting.poses);
         }
-        console.log(rentableInfoAll);
         loading(null, "loading rent info", "success");
         this.setState({
             selecting: {
