@@ -487,7 +487,7 @@ export class FocusSidebar extends React.Component {
                                     Rent Space
                                 </Divider>
                                 <ListItem className="info" style={{ display: "block" }}>
-                                    <Box className="infoHeader">PRICE</Box>
+                                    <Box className="infoHeader">PRICE (per day)</Box>
                                     <Box>
                                     <img
                                         src={
@@ -537,7 +537,7 @@ export class FocusSidebar extends React.Component {
                                     Modify Listing
                                 </Divider>
                                 <ListItem className="info" style={{ display: "block" }}>
-                                    <Box className="infoHeader">PRICE</Box>
+                                    <Box className="infoHeader">PRICE (per day)</Box>
                                     <TextField
                                     hiddenLabel
                                     id="price-textfield"

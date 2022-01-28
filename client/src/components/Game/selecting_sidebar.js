@@ -580,7 +580,7 @@ export class SelectingSidebar extends React.Component {
                           {(this.state.ownedSelection.size * 0.000005).toFixed(6)} SOL
                         </Box> */}
                         <Tooltip placement={'right'} title={tooltipSetPriceTitle}>
-                          <Box className="infoHeader">PRICE</Box>
+                          <Box className="infoHeader">PRICE (per day)</Box>
                         </Tooltip>
                         <TextField
                           hiddenLabel
@@ -674,7 +674,7 @@ export class SelectingSidebar extends React.Component {
                         </Box>
                       </ListItem>
                       <ListItem className="info" style={{ display: "block" }}>
-                        <Box className="infoText1">Total Price</Box>
+                        <Box className="infoText1">Total Price (per day)</Box>
                         <Box
                           style={{
                             filter:

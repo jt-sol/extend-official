@@ -740,7 +740,7 @@ export class Game extends React.Component {
             this.props.setChangeRentTrigger({
                 x: this.state.focus.x,
                 y: this.state.focus.y,
-                price: solToLamports(rentPrice),
+                price: solToLamports(rentPrice / 86400), // convert day to seconds
                 min_duration: 300, // TODO: make input for this
                 max_duration: 3600, // TODO: make input for this
                 max_timestamp: 2000000000, // TODO: make input for this
@@ -768,7 +768,7 @@ export class Game extends React.Component {
         } else {
             this.props.setChangeRentsTrigger({
                 spaces: this.state.selecting.poses,
-                price: solToLamports(rentPrice),
+                price: solToLamports(rentPrice / 86400), // convert day to seconds
                 min_duration: 300, // TODO: make input for this
                 max_duration: 3600, // TODO: make input for this
                 max_timestamp: 2000000000, // TODO: make input for this
@@ -865,7 +865,7 @@ export class Game extends React.Component {
             this.props.setAcceptRentTrigger({
                 x: this.state.focus.x,
                 y: this.state.focus.y,
-                price: solToLamports(rentPrice),
+                price: solToLamports(rentPrice / 86400), // convert days to seconds
                 rent_time: 500, // TODO: make a input for this
                 owner: this.state.focus.owner,
                 mint: this.state.focus.mint,
@@ -971,6 +971,20 @@ export class Game extends React.Component {
         });
     }
 
+    resetTargets = () => {
+        this.setState({
+            selecting: {
+                ...this.state.selecting,
+                purchasable: new Set(),
+                purchasableInfo: [],
+                totalPrice: null,
+                rentable: new Set(),
+                rentableInfo: [],
+                totalRentPrice: null,
+            },
+        });
+    }
+
     handleTargetAll = async () => {
         this.setState({
             selecting: {
@@ -1032,7 +1046,7 @@ export class Game extends React.Component {
                 ...this.state.selecting,
                 rentable,
                 rentableInfo,
-                totalRentPrice: lamportsToSol(totalPrice),
+                totalRentPrice: lamportsToSol(totalPrice * 86400), // convert seconds to days
                 targetStatus: 2,
             },
         });
@@ -1120,21 +1134,6 @@ export class Game extends React.Component {
         return {spaces: purchasable, info: purchasableInfo, floor};
     }
 
-    resetTargets = () => {
-        this.setState({
-            selecting: {
-                ...this.state.selecting,
-                purchasable: new Set(),
-                purchasableInfo: [],
-                totalPrice: null,
-                rentable: new Set(),
-                rentableInfo: [],
-                totalRentPrice: null,
-            },
-        });
-    }
-
-
     handleTargetFloor = async () => {
         this.setState({
             selecting: {
@@ -1170,7 +1169,7 @@ export class Game extends React.Component {
                 targetRentStatus: 2,
                 rentable: spaces,
                 rentableInfo: info,
-                totalRentPrice: lamportsToSol(floor),
+                totalRentPrice: lamportsToSol(floor * 86400), // convert seconds to days
             },
         });
     }
@@ -1643,7 +1642,7 @@ export class Game extends React.Component {
         
 
         if (info.hasRentPrice){
-            info.rentPrice = lamportsToSol(info.rentPrice);
+            info.rentPrice = lamportsToSol(info.rentPrice * 86400); // convert seconds to day
         }
         else{
             info.rentPrice = null;
