@@ -565,7 +565,7 @@ export class SelectingSidebar extends React.Component {
                       </ListItem>
                   </TabPanel>
 
-                  <TabPanel value={this.state.value} index={3}>
+                  <TabPanel value={this.state.value} index={2}>
                         {sidebarHeader}
 
                         {/* Advanced */}
@@ -626,7 +626,7 @@ export class SelectingSidebar extends React.Component {
 
 
 
-                    <TabPanel value={this.state.value} index={2}>
+                    <TabPanel value={this.state.value} index={3}>
                       {sidebarHeader}
                           
                       {/* Purchase info */}
