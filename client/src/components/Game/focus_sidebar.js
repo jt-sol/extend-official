@@ -206,7 +206,7 @@ export class FocusSidebar extends React.Component {
                         <Tab label="Modify" {...a11yProps(0)} />
                         <Tab label={priceInfoName} {...a11yProps(1)} />
                         <Tab label="Advanced" {...a11yProps(2)} />
-                        <Tab label="Rent" {...a11yProps(2)} />
+                        {/* <Tab label="Rent" {...a11yProps(3)} /> */}
                       </Tabs>
                     </AppBar>
 

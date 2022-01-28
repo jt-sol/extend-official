@@ -1621,12 +1621,13 @@ export class Game extends React.Component {
         // );
         let info;
         try { // run props.database query
-            info = await this.props.database.getSpaceInfoWithRent(x, y);
-            console.log(info);
+            // info = await this.props.database.getSpaceInfoWithRent(x, y);
+            info = await this.props.database.getSpaceMetadata(x, y);
         } catch(e) { // if fails, run RPC call
             console.error(e);
             console.log("RPC call for Space metadata");
-            info = await this.props.server.getSpaceInfoWithRent(connection, x, y);
+            // info = await this.props.server.getSpaceInfoWithRent(connection, x, y);
+            info = await this.props.server.getSpaceMetadata(connection, x, y);
         }
 
         if (info.hasPrice) {
@@ -1640,12 +1641,12 @@ export class Game extends React.Component {
             (this.props.user && this.props.user === info.owner);
         
 
-        if (info.hasRentPrice){
-            info.rentPrice = lamportsToSol(info.rentPrice * 86400); // convert seconds to day
-        }
-        else{
-            info.rentPrice = null;
-        }
+        // if (info.hasRentPrice){
+        //     info.rentPrice = lamportsToSol(info.rentPrice * 86400); // convert seconds to day
+        // }
+        // else{
+        //     info.rentPrice = null;
+        // }
 
         const n_y = Math.floor(y / NEIGHBORHOOD_SIZE);
         const n_x = Math.floor(x / NEIGHBORHOOD_SIZE);

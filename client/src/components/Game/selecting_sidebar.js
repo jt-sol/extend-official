@@ -174,8 +174,8 @@ export class SelectingSidebar extends React.Component {
                     >
                       <Tab label="Modify" {...a11yProps(0)} />
                       <Tab label="Price Info" {...a11yProps(1)} />
-                      <Tab label="Rent Info" {...a11yProps(2)} />
-                      <Tab label="Advanced" {...a11yProps(3)} />
+                      <Tab label="Advanced" {...a11yProps(2)} />
+                      {/* <Tab label="Rent Info" {...a11yProps(3)} /> */}
                     </Tabs>
                   </AppBar>
 
@@ -565,8 +565,68 @@ export class SelectingSidebar extends React.Component {
                       </ListItem>
                   </TabPanel>
 
-                  
-                  <TabPanel value={this.state.value} index={2}>
+                  <TabPanel value={this.state.value} index={3}>
+                        {sidebarHeader}
+
+                        {/* Advanced */}
+                        <> 
+                        <Divider className="sidebarDivider">
+                            Advanced
+                        </Divider>
+                        <ListItem className="info" style={{ display: "block" }}>
+                              <Tooltip placement={'right'} title="Refresh information for these Spaces directly from the blockchain. Refreshing may be rate-limited if performed excessively.">  
+                                <Button
+                                size="small"
+                                variant="contained"
+                                onClick={() => {
+                                    this.props.handleSelectingRefresh();
+                                }}
+                                style={{
+                                    width: "100%",
+                                    color: "#FFFFFF",
+                                    background: "linear-gradient(to right bottom, #36EAEF7F, #6B0AC97F)",
+                                }}
+                                >
+                                    Refresh Info
+                                </Button>
+                              </Tooltip>
+                            </ListItem>
+                        <ListItem className="info" style={{ display: "block" }}>
+                            <Typography align="center">
+                              <Tooltip placement={'right'} title="Copy link to the rectangular box containing the selected pixels.">
+                                <Button
+                                    size="small"
+                                    variant="contained"
+                                    onClick={() => {
+                                        let prefix = window.location.hostname;
+                                        if (window.location.port) { // for localhost
+                                            prefix += ":" + window.location.port;
+                                        }
+                                        const fraction = Math.round(this.props.scale * NEIGHBORHOOD_SIZE / this.props.height * 100);
+                                        navigator.clipboard.writeText(`https://${prefix}/rect/${bounds.left}/${bounds.right}/${bounds.top}/${bounds.bottom}/${fraction}`);
+                                        notify({
+                                        description: "URL copied to clipboard",
+                                        });
+                                    }}
+                                    disabled={!this.props.scale}
+                                    style={{
+                                        width: "100%",
+                                        color: "#FFFFFF",
+                                        background: "linear-gradient(to right bottom, #36EAEF7F, #6B0AC97F)",
+                                    }}
+                                    >
+                                        <CopyOutlined />
+                                        Share Rectangular Bounding
+                                </Button>
+                              </Tooltip>
+                            </Typography>
+                        </ListItem>
+                        </>
+                    </TabPanel>
+
+
+
+                    <TabPanel value={this.state.value} index={2}>
                       {sidebarHeader}
                           
                       {/* Purchase info */}
@@ -824,66 +884,6 @@ export class SelectingSidebar extends React.Component {
                         </Tooltip>
                       </ListItem>
                   </TabPanel>
-
-
-                  <TabPanel value={this.state.value} index={3}>
-                        {sidebarHeader}
-
-                        {/* Advanced */}
-                        <> 
-                        <Divider className="sidebarDivider">
-                            Advanced
-                        </Divider>
-                        <ListItem className="info" style={{ display: "block" }}>
-                              <Tooltip placement={'right'} title="Refresh information for these Spaces directly from the blockchain. Refreshing may be rate-limited if performed excessively.">  
-                                <Button
-                                size="small"
-                                variant="contained"
-                                onClick={() => {
-                                    this.props.handleSelectingRefresh();
-                                }}
-                                style={{
-                                    width: "100%",
-                                    color: "#FFFFFF",
-                                    background: "linear-gradient(to right bottom, #36EAEF7F, #6B0AC97F)",
-                                }}
-                                >
-                                    Refresh Info
-                                </Button>
-                              </Tooltip>
-                            </ListItem>
-                        <ListItem className="info" style={{ display: "block" }}>
-                            <Typography align="center">
-                              <Tooltip placement={'right'} title="Copy link to the rectangular box containing the selected pixels.">
-                                <Button
-                                    size="small"
-                                    variant="contained"
-                                    onClick={() => {
-                                        let prefix = window.location.hostname;
-                                        if (window.location.port) { // for localhost
-                                            prefix += ":" + window.location.port;
-                                        }
-                                        const fraction = Math.round(this.props.scale * NEIGHBORHOOD_SIZE / this.props.height * 100);
-                                        navigator.clipboard.writeText(`https://${prefix}/rect/${bounds.left}/${bounds.right}/${bounds.top}/${bounds.bottom}/${fraction}`);
-                                        notify({
-                                        description: "URL copied to clipboard",
-                                        });
-                                    }}
-                                    disabled={!this.props.scale}
-                                    style={{
-                                        width: "100%",
-                                        color: "#FFFFFF",
-                                        background: "linear-gradient(to right bottom, #36EAEF7F, #6B0AC97F)",
-                                    }}
-                                    >
-                                        <CopyOutlined />
-                                        Share Rectangular Bounding
-                                </Button>
-                              </Tooltip>
-                            </Typography>
-                        </ListItem>
-                        </>
-                    </TabPanel>
                 </div>
         )
     }
