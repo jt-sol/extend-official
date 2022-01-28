@@ -143,6 +143,7 @@ export function Screen(props) {
                 server.setAddress(null); 
                 setOwnedSpaces(new Set());
                 setOwnedMints({});
+                // game.current?.resetTargets();
             }
             // update owned tokens
             else if (!wallet.disconnecting && wallet.publicKey && user === wallet.publicKey) {
@@ -160,6 +161,7 @@ export function Screen(props) {
                     setOwnedSpaces(data.spaces);
                     setOwnedMints(data.mints);
                     setLoadedOwned(true);
+                    // game.current?.resetTargets();
                 }
             }
         }
@@ -424,7 +426,7 @@ export function Screen(props) {
     useEffect(() => {
         const asyncSetPrices = async() => {
             const price = changePricesTrigger["price"];
-            const create = changePricesTrigger["delist"];
+            const create = changePricesTrigger["create"];
             const spaces = changePricesTrigger["spaces"];
             if ((price || !create) && wallet.publicKey && spaces) {
 
